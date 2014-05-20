@@ -1,0 +1,11 @@
+##
+## upstart .conf file 
+## Use for installing on debian (Ubuntu, mint) as a service
+##
+## Install as:
+## /etc/init/opfcontrols.conf
+##
+## To start service manually:
+## service opfcontrols start
+##
+exec /usr/local/bin/startpc.sh
