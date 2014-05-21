@@ -60,28 +60,32 @@ and you will stop receiving any egress packets.
     /sbin/sysctl -w net.ipv4.conf.l3port.send_redirects=0
     /sbin/sysctl -w net.ipv4.conf.all.send_redirects=0
 
-**Add ovs and interfaces**
+OVS Setup
+---------
 
+***Caution: If you do this wrong, you will lose access to the Internet and subsequently your ability to find a solution to fix it***
+
+You should just need to install the openvswitch-switch package for your distribution. Make sure that the binaries for ovs-vsctl and ovs-ofctl exist on your system. 
+
+Keep in mind that (despite the configuration) OVS is a switch, not an interface. Once you have installed the switch, you need to connect interfaces to it. In this example, I am going to create a vswitch named ovsbr0 and attach eth0 as an L2 interface. The IP address (via DHCP) will be configured on a new L3 interface named (creatively) l3port. These interfaces are created and attached to the vswitch with the ovs-vsctl tool, which stores this data in an ovsdb for persistance on reboot. Configuration of the interfaces can be done with the route command and stored in /etc/network/interfaces (or the equivalent on your system). 
+
+***Connect the interfaces to your switch***
+
+    ovs-vsctl init
     ovs-vsctl add-br ovsbr0
     ovs-vsctl add-port ovsbr0 l3port
     ovs-vsctl add-port ovsbr0 eth0
+    ovs-vsctl set bridge ovsbr0 protocols=OpenFlow13
 
 **Display results**
 
-    ovs-vsctl list-br
-    ovs-vsctl list-ports ovsbr0
+    # ovs-vsctl list-br
+    ovsbr0
+    # ovs-vsctl list-ports ovsbr0
+    eth0
+    l3port
 
-**Bring up interfaces**
-
-    ifup eth0
-    ifup l3port
-    route -n
-
-***Set OF version to 1.3*** 
-
-    ovs-vsctl set bridge ovsbr0 protocols=OpenFlow13
-
-**/etc/network/interfaces:**
+***Configure /etc/network/interfaces:***
 
     allow-ovs ovsbr0
     iface ovsbr0 inet manual
@@ -95,6 +99,36 @@ and you will stop receiving any egress packets.
     
     allow-ovsbr0 eth0
     iface eth0 inet manual
-    ovs_bridge ovsbr0
-    ovs_type OVSPort
+      ovs_bridge ovsbr0
+      ovs_type OVSPort
+    
+    auto eth0
+    auto l3port
 
+***Enable Interfaces***
+
+    ifup eth0
+    ifup l3port
+
+**Display**
+
+    # ovs-vsctl show
+    1d391ad6-7da1-407f-a469-2a5ac910f915
+        Bridge "ovsbr0"
+            Port "ovsbr0"
+                Interface "ovsbr0"
+                    type: internal
+            Port "eth0"
+                Interface "eth0"
+            Port "l3port"
+                Interface "l3port"
+                    type: internal
+        ovs_version: "1.10.2"
+
+
+###See Also
+* http://git.openvswitch.org/cgi-bin/gitweb.cgi?p=openvswitch;a=blob_plain;f=WHY-OVS;hb=HEAD
+* http://openvswitch.org/cgi-bin/ovsman.cgi?page=utilities%2Fovs-controller.8
+* http://openvswitch.org/cgi-bin/ovsman.cgi?page=utilities%2Fovs-vsctl.8
+* http://openvswitch.org/cgi-bin/ovsman.cgi?page=utilities%2Fovs-ofctl.8
+ 
