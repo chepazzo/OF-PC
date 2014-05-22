@@ -132,3 +132,7 @@ Keep in mind that (despite the configuration) OVS is a switch, not an interface.
 * http://openvswitch.org/cgi-bin/ovsman.cgi?page=utilities%2Fovs-vsctl.8
 * http://openvswitch.org/cgi-bin/ovsman.cgi?page=utilities%2Fovs-ofctl.8
  
+You should also install wireshark, which doesn't come with an of-dissector, so you will have to grab this one:
+
+    git clone https://github.com/CPqD/ofdissector 
+
