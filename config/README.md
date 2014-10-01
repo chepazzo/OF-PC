@@ -2,8 +2,8 @@ OF-PControls Configuration
 ============
 
 There are two configuration files here:
-/etc/ofpcontrols.conf
-/etc/ryu.d/ofpcontrols.conf
+/etc/ofpc.conf
+/etc/ryu.d/ofpc.conf
 
 /etc/ryu.d/
 ------
@@ -18,7 +18,7 @@ conf file that you can load with other modules.
 For convenience, I named this file after this app's module name and put the
 single-option conf file in /etc/ryu.d/.
 
-/etc/ofpcontrols.conf
+/etc/ofpc.conf
 ----------------
 This is the main config file for this app.   This file will hold global settings
 about your network as well as the rules that you want to load on startup.

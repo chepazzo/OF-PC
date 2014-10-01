@@ -8,4 +8,4 @@
 ## To start service manually:
 ## service opfcontrols start
 ##
-exec /usr/local/bin/startpc.sh
+exec /usr/local/bin/startofpc.sh
