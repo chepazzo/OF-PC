@@ -5,46 +5,68 @@ from dnslib import DNSRecord,RR,QTYPE,RCODE,parse_time
 from dnslib.server import DNSServer,DNSHandler,BaseResolver,DNSLogger
 from dnslib.proxy import ProxyResolver,PassthroughDNSHandler,DNSHandler
 
-from . import dnsconf
+#from . import dnsconf
 
-LOCAL_IP = '127.0.0.1'
-LOCAL_PORT = 53
-UP_IP = '127.0.1.1'
-#UP_IP = '8.8.8.8'
-UP_PORT = 53
-TCP = True
+class ParentalControls(object):
 
-def main():
-    resolver = InterceptResolver(UP_IP,UP_PORT,'60s',
-        [
-            '*.bakeshutwait.com IN A 10.15.201.53'
-        ],[],[])
-    #handler = PassthroughDNSHandler
-    handler = DNSHandler
-    logger = DNSLogger("request,reply,truncated,error",False)
-    udp_server = DNSServer(resolver,
-                           port=LOCAL_PORT,
-                           address=LOCAL_IP,
-                           logger=logger,
-                           handler=handler)
-    for rr in resolver.zone:
-        print "    | ",rr[2].toZone()
-    if resolver.nxdomain:
-        print "    NXDOMAIN:",", ".join(resolver.nxdomain)
-    if resolver.skip:
-        print "    Skipping:",", ".join(resolver.skip)
-    print
-    udp_server.start_thread()
-    if TCP:
-        tcp_server = DNSServer(resolver,
-                               port=LOCAL_PORT,
-                               address=LOCAL_IP,
-                               tcp=True,
-                               logger=logger,
-                               handler=handler)
-        tcp_server.start_thread()
-    while udp_server.isAlive():
-        time.sleep(1)
+    def __init__(self):
+        self.load_from_config()
+
+    def load_from_config(self):
+        ## Change to load from saved config
+        self.LOCAL_IP = '127.0.0.1'
+        self.LOCAL_PORT = 53
+        self.UP_IP = '127.0.1.1'
+        #self.UP_IP = '8.8.8.8'
+        self.UP_PORT = 53
+        self.TCP = True
+
+    def start_dnsserver(self):
+        self.resolver = InterceptResolver(self.UP_IP,self.UP_PORT,'60s',
+            [
+                #Need to load from dnsconfig
+            ],[],[])
+        #handler = PassthroughDNSHandler
+        handler = DNSHandler
+        logger = DNSLogger("request,reply,truncated,error",False)
+        self.udp_server = DNSServer(self.resolver,
+                            port=self.LOCAL_PORT,
+                            address=self.LOCAL_IP,
+                            logger=logger,
+                            handler=handler)
+        for rr in self.resolver.zone:
+            print "    | ",rr[2].toZone()
+        if self.resolver.nxdomain:
+            print "    NXDOMAIN:",", ".join(self.resolver.nxdomain)
+        if self.resolver.skip:
+            print "    Skipping:",", ".join(self.resolver.skip)
+        print
+        self.udp_server.start_thread()
+        if self.TCP:
+            self.tcp_server = DNSServer(self.resolver,
+                                port=self.LOCAL_PORT,
+                                address=self.LOCAL_IP,
+                                tcp=True,
+                                logger=logger,
+                                handler=handler)
+            self.tcp_server.start_thread()
+        #self.resolver.add_zone('*.bakeshutwait.com IN A 10.15.201.53')
+        #while udp_server.isAlive():
+        #    time.sleep(1)
+
+    def stop_dnsserver(self):
+        self.udp_server.stop()
+        if self.TCP:
+            self.tcp_server.stop()
+
+    def add_rule(self,domain='',**kwargs):
+        print "Adding Rule for {}".format(domain)
+        zone = "*.{} IN A 10.15.201.53".format(domain)
+        self.resolver.add_zone(zone)
+
+    def get_rules(self):
+        zones = self.resolver.zones
+        return zones
 
 class InterceptResolver(BaseResolver):
 
@@ -75,6 +97,12 @@ class InterceptResolver(BaseResolver):
             for rr in RR.fromZone(i,ttl=self.ttl):
                 self.zone.append((rr.rname,QTYPE[rr.rtype],rr))
 
+    def add_zone(self,zone):
+        print "Adding Zone: {}".format(zone)
+        for rr in RR.fromZone(zone,ttl=self.ttl):
+            self.zone.append((rr.rname,QTYPE[rr.rtype],rr))
+        print self.zone
+
     def resolve(self,request,handler):
         reply = request.reply()
         qname = request.q.qname
@@ -100,5 +128,6 @@ class InterceptResolver(BaseResolver):
         return reply
 
 if __name__ == '__main__':
-    main()
+    PC = ParentalControls()
+    PC.start_dnsserver()
 

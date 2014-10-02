@@ -6,12 +6,12 @@
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-import ofpc
+import dnspc
 import os
 import json
 from pprint import pprint as pp
 
-PC = ofpc.ParentalControls()
+PC = dnspc.ParentalControls()
 
 @app.route('/')
 def top():
@@ -26,20 +26,30 @@ def index():
 
 @app.route('/start')
 def start():
-    PC.start_ofpc()
+    PC.start_dnsserver()
     return "OFPC Started!"
+
+@app.route('/stop')
+def stop():
+    PC.stop_dnsserver()
+    return "OFPC Stopped!"
+
+@app.route('/addfart', methods = ['POST'])
+def addfart():
+    pp(request.__dict__)
+    pp(dir(request))
+    print "oh?: {}".format(request.json.get('mac',None))
+    rule = PC.add_rule(**request.json)
+    #PC.restart_pc()
+    #return request.json
+    return "yo"
+    #return "added {}".format(rule._serialize())
 
 @app.route('/get/rules')
 def get_rules():
-    retval = [s._serialize() for s in PC.rules]
-    return json.dumps(retval)
-
-@app.route('/addrule', methods = ['POST'])
-def addrule():
-    pp(request.json)
-    rule = PC.add_rule(**request.json)
-    PC.restart_pc()
-    return "added {}".format(rule._serialize())
+    rules = PC.get_rules()
+    #retval = [s._serialize() for s in PC.rules]
+    #return json.dumps(retval)
 
 if __name__ == '__main__':
     import sys
@@ -49,4 +59,5 @@ if __name__ == '__main__':
     else:
         print "Flask Production"
         app.run(host='0.0.0.0')
+    PC.start_dnsserver()
 
