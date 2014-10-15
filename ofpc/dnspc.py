@@ -10,14 +10,15 @@ from dnslib.proxy import ProxyResolver,PassthroughDNSHandler,DNSHandler
 class ParentalControls(object):
 
     def __init__(self):
+        self.rules = []
         self.load_from_config()
 
     def load_from_config(self):
         ## Change to load from saved config
         self.LOCAL_IP = '127.0.0.1'
         self.LOCAL_PORT = 53
-        self.UP_IP = '127.0.1.1'
-        #self.UP_IP = '8.8.8.8'
+        #self.UP_IP = '127.0.1.1'
+        self.UP_IP = '8.8.8.8'
         self.UP_PORT = 53
         self.TCP = True
 
@@ -59,14 +60,21 @@ class ParentalControls(object):
         if self.TCP:
             self.tcp_server.stop()
 
-    def add_rule(self,domain='',**kwargs):
-        print "Adding Rule for {}".format(domain)
-        zone = "*.{} IN A 10.15.201.53".format(domain)
-        self.resolver.add_zone(zone)
+    def add_rule(self,d=None,**kwargs):
+        self.rules.append(PCRule(**kwargs))
 
     def get_rules(self):
-        zones = self.resolver.zones
-        return zones
+        return self.rules
+
+## note to self: change from object to dict later
+class PCRule(object):
+    def __init__(self,**kwargs):
+        self.src_ip = kwargs['src_ip']
+        self.dow = kwargs['dow']
+        self.time_start = kwargs['time_start']
+        self.time_end = kwargs['time_end']
+        self.dst_str = kwargs['dst_str']
+        self.action = kwargs['action']
 
 class InterceptResolver(BaseResolver):
 
@@ -104,6 +112,8 @@ class InterceptResolver(BaseResolver):
         print self.zone
 
     def resolve(self,request,handler):
+        client_ip = handler.client_address
+        print "Request from IP: {}".format(client_ip)
         reply = request.reply()
         qname = request.q.qname
         qtype = QTYPE[request.q.qtype]
@@ -129,5 +139,6 @@ class InterceptResolver(BaseResolver):
 
 if __name__ == '__main__':
     PC = ParentalControls()
+    print PC
     PC.start_dnsserver()
 

@@ -36,20 +36,20 @@ def stop():
 
 @app.route('/addfart', methods = ['POST'])
 def addfart():
-    pp(request.__dict__)
-    pp(dir(request))
-    print "oh?: {}".format(request.json.get('mac',None))
-    rule = PC.add_rule(**request.json)
+    #pp(request.__dict__)
+    #pp(dir(request))
+    #print "oh?: {}".format(request.json.get('mac',None))
+    rule = PC.add_rule(request.json)
     #PC.restart_pc()
-    #return request.json
-    return "yo"
+    return request.json
     #return "added {}".format(rule._serialize())
 
 @app.route('/get/rules')
 def get_rules():
     rules = PC.get_rules()
+    return "my rules\n"
     #retval = [s._serialize() for s in PC.rules]
-    #return json.dumps(retval)
+    return json.dumps(retval)
 
 if __name__ == '__main__':
     import sys
