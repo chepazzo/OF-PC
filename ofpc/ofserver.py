@@ -34,15 +34,31 @@ def stop():
     PC.stop_dnsserver()
     return "OFPC Stopped!"
 
-@app.route('/addfart', methods = ['POST'])
-def addfart():
+@app.route('/addrule', methods = ['POST'])
+def addrule():
     #pp(request.__dict__)
     #pp(dir(request))
     print "oh?: {}".format(request.json.get('src_ip',None))
     rule = PC.add_rule(**request.json)
     #PC.restart_pc()
-    return json.dumps(request.json)
+    return json.dumps(succ(value=rule._serialize()))
     #return "added {}".format(rule._serialize())
+
+@app.route('/delrule', methods = ['POST'])
+def delrule():
+    #pp(request.__dict__)
+    #pp(dir(request))
+    print "oh?: {}".format(request.json.get('src_ip',None))
+    args = **request.json
+    uid = args['uid']
+    succ = PC.del_rule(uid)
+    #PC.restart_pc()
+    if succ == False:
+        ret = fail('Unable to delete rule {}'.format(uid))
+    else:
+        ret = succ(value=uid)
+    return json.dumps(ret)
+    #return "deleted {}".format(rule._serialize())
 
 @app.route('/get/rules')
 def get_rules():
@@ -50,7 +66,16 @@ def get_rules():
     print 'rules',rules
     #return "my rules\n"
     retval = [s._serialize() for s in PC.rules]
-    return json.dumps(retval)
+    return json.dumps(succ(value=retval))
+
+def succ(field='data',value=''):
+    ''' {'stat':'ok', 'data':{} '''
+    return {'stat':'ok',field:value}
+
+def fail(msg='',code=0):
+    ''' {'stat':'fail', 'err':{'msg':'', 'code':0}} '''
+    err = {'msg':message,'code':code}
+    return {'stat':'fail','err':err}
 
 if __name__ == '__main__':
     import sys

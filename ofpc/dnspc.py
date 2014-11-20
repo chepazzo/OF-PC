@@ -53,7 +53,23 @@ class ParentalControls(object):
     def add_rule(self,d=None,**kwargs):
         print "add_rule({})".format(kwargs)
         #pp(kwargs)
-        self.rules.append(PCRule(**kwargs))
+        rule = PCRule(**kwargs)
+        self.rules.append(rule)
+        return rule
+
+    def del_rule(self,uid):
+        ''' del_rule(uid) returns:
+             None: uid did not appear in list.
+             True: success
+            False: failure
+        '''
+        print "del_rule({})".format(kwargs)
+        if uid not in [x['uid'] for x in self.rules]:
+            return None
+        self.rules = [x for x in self.rules if x['uid'] is not uid]
+        if uid in [x['uid'] for x in self.rules]:
+            return False
+        return True
 
     def get_rules(self):
         return self.rules
@@ -70,8 +86,14 @@ class PCRule(object):
         self.time_start = '*'
         self.time_end = '*'
         self.action = 'block'
+        self.key = self._genkey()
         for k in kwargs:
             setattr(self,k,kwargs[k])
+    def _genkey():
+        key = int(time.strftime('%Y%U%w000'))
+        while len([1 for r in self.rules if r['uid'] == str(key)]) > 0:
+            key = key + 1
+        return key
     def is_match(self,src_ip=None,dst_str=None):
         ## put in a for loop to verify each value is a match
         #print "does {} from {} match {} from {}".format(dst_str,src_ip,self.dst_str,self.src_ip)
