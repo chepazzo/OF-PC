@@ -1,0 +1,51 @@
+<!doctype html>
+<html ng-app>
+ <head>
+  <title>Parental Controls</title>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
+  <style>
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+  <script src="PCCtrl.js">
+  <script>
+
+  </script>
+ </head>
+ <body>
+  <div id='head'>
+   <div id='title'>Parental Controls</div>
+  </div><!-- id='head' -->
+  <div id='body'>
+    <div id='addrule' class='section'>
+     <a href='/addrule.html'>Add Rule</a>
+    </div><!-- id='addrule' -->
+   </div>
+  </div><!-- id='body' -->
+  <script>
+function clearElements(element) {
+    var len = element.childNodes.length;
+    for (var cIdx = 0; cIdx < len; cIdx++) {
+        element.removeChild(element.firstChild);
+    }
+}
+
+function gotSongs(obj,txt) {
+    console.log(obj);
+    var div = document.getElementById('songlist');
+    clearElements(div);
+    var table = document.createElement('table');
+    div.appendChild(table);
+    for (artist in obj) {
+        for (sidx in obj[artist]) {
+            var song = obj[artist][sidx];
+            var row = table.insertRow(-1);
+            var aCell = row.insertCell(-1);
+            var sCell = row.insertCell(-1);
+            aCell.appendChild(document.createTextNode(artist));
+            sCell.appendChild(document.createTextNode(song.title));
+        }
+    }
+}
+  </script>
+ </body>
+</html>
