@@ -16,7 +16,7 @@ class PCRule(object):
         self.time_start = '*'
         self.time_end = '*'
         self.action = 'block'
-        print "WTF: PCRule()"
+        #print "WTF: PCRule()"
         for k in kwargs:
             setattr(self,k,kwargs[k])
     def is_match(self,src_ip=None,dst_str=None):
@@ -95,14 +95,14 @@ class ParentalControls(BaseResolver):
             self.tcp_server.stop()
 
     def add_rule(self,d=None,**kwargs):
-        print "add_rule({})".format(kwargs)
+        #print "add_rule({})".format(kwargs)
         #pp(kwargs)
         key = self._genkey()
-        print "WTF: Created key:",key
+        #print "WTF: Created key:",key
         rule = PCRule(_uid=key,**kwargs)
-        print "rules are cool"
+        #print "rules are cool"
         self.rules.append(rule)
-        pp(self.rules)
+        #pp(self.rules)
         return rule
 
     def del_rule(self,uid):
@@ -111,10 +111,13 @@ class ParentalControls(BaseResolver):
              True: success
             False: failure
         '''
-        print "del_rule({})".format(kwargs)
+        #print "del_rule({})".format(uid)
+        #pp([x._serialize() for x in self.rules])
+        uids = [x._uid for x in self.rules]
+        #print uids
         if uid not in [x._uid for x in self.rules]:
             return None
-        self.rules = [x for x in self.rules if x._uid is not uid]
+        self.rules = [x for x in self.rules if x._uid != uid]
         if uid in [x._uid for x in self.rules]:
             return False
         return True
@@ -127,11 +130,11 @@ class ParentalControls(BaseResolver):
         return rs
 
     def _genkey(self):
-        print "WTF: _genkey()"
+        #print "WTF: _genkey()"
         key = int(time.strftime('%Y%U%w000'))
-        print "WTF: My key:",key
+        #print "WTF: My key:",key
         keys = [r._uid for r in self.rules]
-        print "WTF: keys:",keys
+        #print "WTF: keys:",keys
         #while len([1 for r in self.rules if int(r['_uid']) == key]) > 0:
         while key in keys:
             key = key + 1

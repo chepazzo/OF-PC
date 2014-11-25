@@ -38,9 +38,9 @@ def stop():
 def addrule():
     #pp(request.__dict__)
     #pp(dir(request))
-    print "oh?: {}".format(request.json.get('src_ip',None))
+    #print "oh?: {}".format(request.json.get('src_ip',None))
     rule = PC.add_rule(**request.json)
-    print "rule added!"
+    #print "rule added!"
     #PC.restart_pc()
     return json.dumps(succ(value=rule._serialize()))
     #return "added {}".format(rule._serialize())
@@ -49,12 +49,14 @@ def addrule():
 def delrule():
     #pp(request.__dict__)
     #pp(dir(request))
-    print "oh?: {}".format(request.json.get('src_ip',None))
-    args = {}#**request.json
+    #print "oh?: {}".format(request.json.get('uid',None))
+    #pp(request.json)
+    args = request.json
     uid = args['uid']
-    succ = PC.del_rule(uid)
+    res = PC.del_rule(uid)
+    #print "WTF: uid:",uid,res
     #PC.restart_pc()
-    if succ == False:
+    if res == False:
         ret = fail('Unable to delete rule {}'.format(uid))
     else:
         ret = succ(value=uid)
@@ -64,7 +66,7 @@ def delrule():
 @app.route('/get/rules')
 def get_rules():
     rules = PC.get_rules()
-    print 'rules',rules
+    #print 'rules',rules
     #return "my rules\n"
     retval = [s._serialize() for s in PC.rules]
     return json.dumps(succ(value=retval))
@@ -75,7 +77,7 @@ def succ(field='data',value=''):
 
 def fail(msg='',code=0):
     ''' {'stat':'fail', 'err':{'msg':'', 'code':0}} '''
-    err = {'msg':message,'code':code}
+    err = {'msg':msg,'code':code}
     return {'stat':'fail','err':err}
 
 if __name__ == '__main__':
