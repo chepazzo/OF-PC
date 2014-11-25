@@ -19,6 +19,23 @@
     <div id='addrule' class='section'>
      <a href='/addrule.html'>Add Rule</a>
     </div><!-- id='addrule' -->
+    <div id='currrules' class='section'>
+     <span class='label'>Rules:</span>
+     {% if currrules|length == 0 %}
+       None!
+     {% else %}
+      <table style='margin:auto'>
+       <tr><th>Src</th><th>Dst</th><th>When</th><th>Action</th></tr>
+       {% for rule in currrules %}
+          <tr><td class='src'>{{rule.src_ip}}</td>
+              <td class='dst'>{{rule.dst_str}}</td>
+              <td class='when'>{{rule.dow}}: {{rule.time_start}} - {{rule.time_end}}</td>
+              <td class='act'>{{rule.action}}</td>
+          </tr>
+       {% endfor %}
+      </table>
+     {% endif %}
+    </div><!-- id='currrules' -->
    </div>
   </div><!-- id='body' -->
   <script>
