@@ -8,76 +8,6 @@ from pprint import pprint as pp
 
 #from . import dnsconf
 
-class ParentalControls(object):
-
-    def __init__(self):
-        self.rules = []
-        self.load_from_config()
-
-    def load_from_config(self):
-        ## Change to load from saved config
-        self.LOCAL_IP = '127.0.0.1'
-        self.LOCAL_PORT = 53
-        #self.UP_IP = '127.0.1.1'
-        self.UP_IP = '8.8.8.8'
-        self.UP_PORT = 53
-        self.TCP = True
-
-    def start_dnsserver(self):
-        self.resolver = InterceptResolver(self,self.UP_IP,self.UP_PORT,'60s')
-        handler = DNSHandler
-        logger = DNSLogger("request,reply,truncated,error",False)
-        self.udp_server = DNSServer(self.resolver,
-                            port=self.LOCAL_PORT,
-                            address=self.LOCAL_IP,
-                            logger=logger,
-                            handler=handler)
-        self.udp_server.start_thread()
-        if self.TCP:
-            self.tcp_server = DNSServer(self.resolver,
-                                port=self.LOCAL_PORT,
-                                address=self.LOCAL_IP,
-                                tcp=True,
-                                logger=logger,
-                                handler=handler)
-            self.tcp_server.start_thread()
-        #self.resolver.add_zone('*.bakeshutwait.com IN A 10.15.201.53')
-        #while udp_server.isAlive():
-        #    time.sleep(1)
-
-    def stop_dnsserver(self):
-        self.udp_server.stop()
-        if self.TCP:
-            self.tcp_server.stop()
-
-    def add_rule(self,d=None,**kwargs):
-        print "add_rule({})".format(kwargs)
-        #pp(kwargs)
-        rule = PCRule(**kwargs)
-        self.rules.append(rule)
-        return rule
-
-    def del_rule(self,uid):
-        ''' del_rule(uid) returns:
-             None: uid did not appear in list.
-             True: success
-            False: failure
-        '''
-        print "del_rule({})".format(kwargs)
-        if uid not in [x['uid'] for x in self.rules]:
-            return None
-        self.rules = [x for x in self.rules if x['uid'] is not uid]
-        if uid in [x['uid'] for x in self.rules]:
-            return False
-        return True
-
-    def get_rules(self):
-        return self.rules
-
-    def get_matching_rules(self,src_ip,dst_str):
-        rs = [ r for r in self.rules if r.is_match(src_ip,dst_str) ]
-        return rs
-
 class PCRule(object):
     def __init__(self,**kwargs):
         self.src_ip = '*'
@@ -86,14 +16,9 @@ class PCRule(object):
         self.time_start = '*'
         self.time_end = '*'
         self.action = 'block'
-        self.key = self._genkey()
+        print "WTF: PCRule()"
         for k in kwargs:
             setattr(self,k,kwargs[k])
-    def _genkey():
-        key = int(time.strftime('%Y%U%w000'))
-        while len([1 for r in self.rules if r['uid'] == str(key)]) > 0:
-            key = key + 1
-        return key
     def is_match(self,src_ip=None,dst_str=None):
         ## put in a for loop to verify each value is a match
         #print "does {} from {} match {} from {}".format(dst_str,src_ip,self.dst_str,self.src_ip)
@@ -118,7 +43,8 @@ class PCRule(object):
             retval[f] = getattr(self,f,None)
         return retval
 
-class InterceptResolver(BaseResolver):
+
+class ParentalControls(BaseResolver):
 
     """
         Intercepting resolver 
@@ -127,24 +53,89 @@ class InterceptResolver(BaseResolver):
         matching local records
     """
 
-    def __init__(self,pcobj,address,port,ttl):
+    def __init__(self):
+        self.rules = []
+        self.load_from_config()
+
+    def load_from_config(self):
         """
             address/port    - upstream server
             ttl             - default ttl for intercept records
-            intercept       - list of wildcard RRs to respond to (zone format)
-            skip            - list of wildcard labels to skip 
-            nxdomain        - list of wildcard labels to retudn NXDOMAIN
         """
-        self.PC = pcobj
-        self.address = address
-        self.port = port
-        self.ttl = parse_time(ttl)
+        ## Change to load from saved config
+        self.LOCAL_IP = '127.0.0.1'
+        self.LOCAL_PORT = 53
+        #self.UP_IP = '127.0.1.1'
+        self.UP_IP = '8.8.8.8'
+        self.UP_PORT = 53
+        self.TCP = True
+        self.TTL = parse_time('60s')
 
-    def add_zone(self,zone):
-        #print "Adding Zone: {}".format(zone)
-        for rr in RR.fromZone(zone,ttl=self.ttl):
-            self.zone.append((rr.rname,QTYPE[rr.rtype],rr))
-        #print self.zone
+    def start(self):
+        handler = DNSHandler
+        logger = DNSLogger("request,reply,truncated,error",False)
+        self.udp_server = DNSServer(self,
+                            port=self.LOCAL_PORT,
+                            address=self.LOCAL_IP,
+                            logger=logger,
+                            handler=handler)
+        self.udp_server.start_thread()
+        if self.TCP:
+            self.tcp_server = DNSServer(self,
+                                port=self.LOCAL_PORT,
+                                address=self.LOCAL_IP,
+                                tcp=True,
+                                logger=logger,
+                                handler=handler)
+            self.tcp_server.start_thread()
+
+    def stop(self):
+        self.udp_server.stop()
+        if self.TCP:
+            self.tcp_server.stop()
+
+    def add_rule(self,d=None,**kwargs):
+        print "add_rule({})".format(kwargs)
+        #pp(kwargs)
+        key = self._genkey()
+        print "WTF: Created key:",key
+        rule = PCRule(_uid=key,**kwargs)
+        print "rules are cool"
+        self.rules.append(rule)
+        pp(self.rules)
+        return rule
+
+    def del_rule(self,uid):
+        ''' del_rule(uid) returns:
+             None: uid did not appear in list.
+             True: success
+            False: failure
+        '''
+        print "del_rule({})".format(kwargs)
+        if uid not in [x._uid for x in self.rules]:
+            return None
+        self.rules = [x for x in self.rules if x._uid is not uid]
+        if uid in [x._uid for x in self.rules]:
+            return False
+        return True
+
+    def get_rules(self):
+        return self.rules
+
+    def get_matching_rules(self,src_ip,dst_str):
+        rs = [ r for r in self.rules if r.is_match(src_ip,dst_str) ]
+        return rs
+
+    def _genkey(self):
+        print "WTF: _genkey()"
+        key = int(time.strftime('%Y%U%w000'))
+        print "WTF: My key:",key
+        keys = [r._uid for r in self.rules]
+        print "WTF: keys:",keys
+        #while len([1 for r in self.rules if int(r['_uid']) == key]) > 0:
+        while key in keys:
+            key = key + 1
+        return key
 
     def resolve(self,request,handler):
         client_ip = handler.client_address[0]
@@ -155,42 +146,21 @@ class InterceptResolver(BaseResolver):
         #print "query: {}".format(qname)
         #print "query: {}".format(qname.matchGlob("*.yahoo.com"))
         # Try to resolve locally unless on skip list
-        if any(self.PC.get_matching_rules(client_ip,qname)):
+        if any(self.get_matching_rules(client_ip,qname)):
             ## right now returning nothing
             ## need to change to return based on rule match
             ## (block, redirect, etc)
             pass
         else:
             if handler.protocol == 'udp':
-                proxy_r = request.send(self.address,self.port)
+                proxy_r = request.send(self.UP_IP,self.UP_PORT)
             else:
-                proxy_r = request.send(self.address,self.port,tcp=True)
+                proxy_r = request.send(self.UP_IP,self.UP_PORT,tcp=True)
             reply = DNSRecord.parse(proxy_r)
-        return reply
-        ###
-        # No longer Needed!!
-        #
-        #if not any([qname.matchGlob(s) for s in self.skip]):
-        #    for name,rtype,rr in self.zone:
-        #        if qname.matchGlob(name) and (qtype in (rtype,'ANY','CNAME')):
-        #            a = copy.copy(rr)
-        #            a.rname = qname
-        #            reply.add_answer(a)
-        ## Check for NXDOMAIN
-        #if any([qname.matchGlob(s) for s in self.nxdomain]):
-        #    reply.header.rcode = getattr(RCODE,'NXDOMAIN')
-        #    return reply
-        ## Otherwise proxy
-        #if not reply.rr:
-        #    if handler.protocol == 'udp':
-        #        proxy_r = request.send(self.address,self.port)
-        #    else:
-        #        proxy_r = request.send(self.address,self.port,tcp=True)
-        #    reply = DNSRecord.parse(proxy_r)
         return reply
 
 if __name__ == '__main__':
     PC = ParentalControls()
     print PC
-    PC.start_dnsserver()
+    PC.start()
 

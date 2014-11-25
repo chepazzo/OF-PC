@@ -26,12 +26,12 @@ def index():
 
 @app.route('/start')
 def start():
-    PC.start_dnsserver()
+    PC.start()
     return "OFPC Started!"
 
 @app.route('/stop')
 def stop():
-    PC.stop_dnsserver()
+    PC.stop()
     return "OFPC Stopped!"
 
 @app.route('/addrule', methods = ['POST'])
@@ -40,6 +40,7 @@ def addrule():
     #pp(dir(request))
     print "oh?: {}".format(request.json.get('src_ip',None))
     rule = PC.add_rule(**request.json)
+    print "rule added!"
     #PC.restart_pc()
     return json.dumps(succ(value=rule._serialize()))
     #return "added {}".format(rule._serialize())
@@ -49,7 +50,7 @@ def delrule():
     #pp(request.__dict__)
     #pp(dir(request))
     print "oh?: {}".format(request.json.get('src_ip',None))
-    args = **request.json
+    args = {}#**request.json
     uid = args['uid']
     succ = PC.del_rule(uid)
     #PC.restart_pc()
@@ -85,5 +86,5 @@ if __name__ == '__main__':
     else:
         print "Flask Production"
         app.run(host='0.0.0.0')
-    PC.start_dnsserver()
+    PC.start()
 
