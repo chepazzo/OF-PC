@@ -24,6 +24,10 @@ def index():
         json=json,
         currrules=PC.rules)
 
+@app.route('/PCCtrl.js')
+def pcctrljs():
+    return render_template('PCCtrl.js')
+
 @app.route('/start')
 def start():
     PC.start()
