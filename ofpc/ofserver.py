@@ -19,10 +19,11 @@ def top():
 
 @app.route('/index.html')
 def index():
-    return render_template('index.html',
-        list=list,
-        json=json,
-        currrules=PC.rules)
+    return render_template('index.html')
+
+@app.route('/addrule.html')
+def addrulehtml():
+    return render_template('addrule.html')
 
 @app.route('/PCCtrl.js')
 def pcctrljs():

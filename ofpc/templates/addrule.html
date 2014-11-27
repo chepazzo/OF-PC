@@ -1,0 +1,39 @@
+<!doctype html>
+<html ng-app='pcApp'>
+ <head>
+  <title>Add Rule - Parental Controls</title>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
+  <style>
+tr.head {
+    text-align:center;
+    font-weight:bold;
+}
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+  <script src="PCCtrl.js"></script>
+ </head>
+ <body>
+  <div id='head'>
+   <div id='title'>Add Rule - Parental Controls</div>
+  </div><!-- id='head' -->
+  <div id='body'>
+   <div id=PCCtrl ng-controller="PCCtrl">
+    <form novalidate class="simple-form">
+      Source: <input type="text" ng-model="rule.src_ip" /><br />
+      Destination: <input type="text" ng-model="rule.dst_str" /><br />
+      Days of Week: <input type="text" ng-model="rule.dow" /><br />
+      Start Time: <input type="text" ng-model="rule.time_start" /><br />
+      End Time: <input type="text" ng-model="rule.time_end" /><br />
+      Action: <input type="radio" ng-model="rule.action" value="block" />block
+              <input type="radio" ng-model="rule.action" value="allow" />allow<br />
+      <button ng-click="reset()">RESET</button>
+      <button ng-click="add_rule(rule)">SAVE</button>
+    </form>
+    <pre>form = {[rule | json]}</pre>
+    <pre>master = {[master | json]}</pre>
+   </div>
+  </div><!-- id='body' -->
+  <script>
+  </script>
+ </body>
+</html>
