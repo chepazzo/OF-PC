@@ -40,38 +40,23 @@ def stop():
 
 @app.route('/addrule', methods = ['POST'])
 def addrule():
-    #pp(request.__dict__)
-    #pp(dir(request))
-    #print "oh?: {}".format(request.json.get('src_ip',None))
     rule = PC.add_rule(**request.json)
-    #print "rule added!"
-    #PC.restart_pc()
     return json.dumps(succ(value=rule._serialize()))
-    #return "added {}".format(rule._serialize())
 
 @app.route('/delrule', methods = ['POST'])
 def delrule():
-    #pp(request.__dict__)
-    #pp(dir(request))
-    #print "oh?: {}".format(request.json.get('uid',None))
-    #pp(request.json)
     args = request.json
     uid = args['uid']
     res = PC.del_rule(uid)
-    #print "WTF: uid:",uid,res
-    #PC.restart_pc()
     if res == False:
         ret = fail('Unable to delete rule {}'.format(uid))
     else:
         ret = succ(value=uid)
     return json.dumps(ret)
-    #return "deleted {}".format(rule._serialize())
 
 @app.route('/get/rules')
 def get_rules():
     rules = PC.get_rules()
-    #print 'rules',rules
-    #return "my rules\n"
     retval = [s._serialize() for s in PC.rules]
     return json.dumps(succ(value=retval))
 
@@ -88,7 +73,8 @@ if __name__ == '__main__':
     import sys
     if 'debug' in sys.argv:
         print "Flask DEBUG"
-        app.run(debug = True)
+        app.run(host='0.0.0.0',debug = True)
+        #app.run(debug = True)
     else:
         print "Flask Production"
         app.run(host='0.0.0.0')

@@ -1,4 +1,11 @@
-function PCCtrl($scope,$http) {
+var pcApp = angular.module('pcApp', []);
+
+pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
+    $interpolateProvider.startSymbol('{[');
+    $interpolateProvider.endSymbol(']}');
+  }]);
+
+pcApp.controller('PCCtrl', function ($scope,$http) {
     $scope.add_rule = function(data) {
         var url = '{{url_for('addrule')}}';
         var method = 'POST';
@@ -29,8 +36,8 @@ function PCCtrl($scope,$http) {
         $http(
             {method: method, url: url}
         ).success(function(data, status) {
-            gotRules(data,status);
-            //$scope.myrules = data.data;
+            //gotRules(data,status);
+            $scope.myrules = data.data;
             //myFrules = data.data;
             console.log(data.data);
         }).error(function(data, status) {
@@ -39,5 +46,5 @@ function PCCtrl($scope,$http) {
     };
 
     $scope.get_rules();
-}
+});
 

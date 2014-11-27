@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app>
+<html ng-app='pcApp'>
  <head>
   <title>Parental Controls</title>
   <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
@@ -24,69 +24,20 @@ tr.head {
     <div><span class='clickable' ng-click='get_rules()'>Reload</span></div>
     <div id='currrules' class='section'>
      <span class='label'>Rules:</span>
-     {% if currrules|length == 0 %}
-       None!
-     {% else %}
       <table style='margin:auto'>
        <tr><th></th><th>Src</th><th>Dst</th><th>When</th><th>Action</th></tr>
-       {% for rule in currrules %}
-          <tr><td class='del'><span class='clickable' ng-click='del_rule({{rule._uid}})' >del</span></td>
-              <td class='src'>{{rule.src_ip}}</td>
-              <td class='dst'>{{rule.dst_str}}</td>
-              <td class='when'>{{rule.dow}}: {{rule.time_start}} - {{rule.time_end}}</td>
-              <td class='act'>{{rule.action}}</td>
+          <tr ng-repeat='rule in myrules'>
+              <td class='del'><span class='clickable' ng-click='del_rule(rule._uid)' >del</span></td>
+              <td class='src'>{[rule.src_ip]}</td>
+              <td class='dst'>{[rule.dst_str]}</td>
+              <td class='when'>{[rule.dow]}: {[rule.time_start]} - {[rule.time_end]}</td>
+              <td class='act'>{[rule.action]}</td>
           </tr>
-       {% endfor %}
       </table>
-     {% endif %}
     </div><!-- id='currrules' -->
    </div>
   </div><!-- id='body' -->
   <script>
-
-var RULES = [];
-
-function clearElements(element) {
-    var len = element.childNodes.length;
-    for (var cIdx = 0; cIdx < len; cIdx++) {
-        element.removeChild(element.firstChild);
-    }
-}
-
-function gotRules(obj,stat) {
-    console.log('gotRules');
-    console.log(obj);
-    console.log(stat);
-    RULES = obj.data;
-    var div = document.getElementById('currrules');
-    clearElements(div);
-    var table = document.createElement('table');
-    table.style.margin = 'auto';
-    div.appendChild(table);
-    var hrow = table.insertRow(-1);
-    hrow.className = 'head';
-    hrow.insertCell(-1);
-    hrow.insertCell(-1).appendChild(document.createTextNode('Src'));
-    hrow.insertCell(-1).appendChild(document.createTextNode('Dst'));
-    hrow.insertCell(-1).appendChild(document.createTextNode('When'));
-    hrow.insertCell(-1).appendChild(document.createTextNode('Action'));
-    for (var i=0; i<obj.data.length; i++) {
-        var rule = obj.data[i];
-        console.log(rule);
-        var when = rule.dow+': '+rule.time_start+' - '+rule.time_end;
-        var row = table.insertRow(-1);
-        var cdel = row.insertCell(-1);
-        cdel.appendChild(document.createTextNode('del'));
-        cdel.uid = rule._uid;
-        cdel.onclick = function() { $scope.del_rule(self.uid)};
-        //cdel.setAttribute('ng-click','del_rule('+rule._uid+')');
-        cdel.className = 'clickable'
-        row.insertCell(-1).appendChild(document.createTextNode(rule.src_ip));
-        row.insertCell(-1).appendChild(document.createTextNode(rule.dst_str));
-        row.insertCell(-1).appendChild(document.createTextNode(when));
-        row.insertCell(-1).appendChild(document.createTextNode(rule.action));
-    }
-}
   </script>
  </body>
 </html>
