@@ -30,7 +30,7 @@ tr.head {
               <td class='del'><span class='clickable' ng-click='del_rule(rule._uid)' >del</span></td>
               <td class='src'>{[rule.src_ip]}</td>
               <td class='dst'>{[rule.dst_str]}</td>
-              <td class='when'>{[rule.dow]}: {[rule.time_start]} - {[rule.time_end]}</td>
+              <td class='when'>{[parsedow(rule.dow)]}: {[rule.time_start]} - {[rule.time_end]}</td>
               <td class='act'>{[rule.action]}</td>
           </tr>
       </table>

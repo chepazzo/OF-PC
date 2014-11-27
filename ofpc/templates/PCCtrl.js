@@ -12,9 +12,11 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
         $http(
             {method: method, url: url,data: JSON.stringify(data)}
         ).success(function(data, status) {
-            gotAdd(data,status);
+            $scope.get_rules();
         }).error(function(data, status) {
-            gotAdd(data,status);
+            console.log('ERROR');
+            console.log(data);
+            console.log(status);
         });
     };
     $scope.del_rule = function(uid) {
@@ -27,7 +29,9 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
             //gotDel(data,status);
             $scope.get_rules();
         }).error(function(data, status) {
-            gotDel(data,status);
+            console.log('ERROR');
+            console.log(data);
+            console.log(status);
         });
     };
     $scope.get_rules = function() {
@@ -38,11 +42,23 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
         ).success(function(data, status) {
             //gotRules(data,status);
             $scope.myrules = data.data;
-            //myFrules = data.data;
             console.log(data.data);
         }).error(function(data, status) {
-            gotRules(data,status);
+            console.log('ERROR');
+            console.log(data);
+            console.log(status);
         });
+    };
+
+    $scope.parsedow = function(dow) {
+        var a = ['S','M','T','W','T','F','S'];
+        var newdow = [];
+        var dows = dow.split(',');
+        for (i=0; i<dows.length; i++) {
+            var d = parseInt(dows[i]);
+            newdow.push(a[d]);
+        }
+        return newdow.join(',');
     };
 
     $scope.get_rules();
