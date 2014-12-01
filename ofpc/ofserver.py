@@ -72,12 +72,22 @@ def fail(msg='',code=0):
 
 if __name__ == '__main__':
     import sys
-    if 'debug' in sys.argv:
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i",default='/etc/dnspc.conf',help="Specify config file")
+    parser.add_argument('--debug', action='store_true', default=False,help="Enable debug mode")
+    args = parser.parse_args()
+
+    if args.debug is True:
         print "Flask DEBUG"
-        app.run(host='0.0.0.0',debug = True)
-        #app.run(debug = True)
     else:
         print "Flask Production"
-        app.run(host='0.0.0.0')
-    PC.start()
 
+    print "About to start PC"
+    #PC.stop()
+    #PC.start()
+
+    print "About to start flask"
+    app.run(host='0.0.0.0',debug = args.debug)
+    ## Nothing else gets executed here
