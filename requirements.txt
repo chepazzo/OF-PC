@@ -1,0 +1,4 @@
+Flask>=0.10.1
+dnslib>=0.9.3
+oslo.config>=1.4.0
+IPy>=0.81

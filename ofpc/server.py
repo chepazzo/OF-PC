@@ -7,6 +7,7 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 import dnspc
+from dnsconf import settings
 import os
 import json
 from pprint import pprint as pp
@@ -85,8 +86,8 @@ if __name__ == '__main__':
         print "Flask Production"
 
     print "About to start PC"
-    #PC.stop()
-    #PC.start()
+    PC.stop()
+    PC.start()
 
     print "About to start flask"
     app.run(host='0.0.0.0',debug = args.debug)

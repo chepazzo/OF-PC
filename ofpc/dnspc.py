@@ -6,7 +6,7 @@ from dnslib.server import DNSServer,DNSHandler,BaseResolver,DNSLogger
 from dnslib.proxy import ProxyResolver,PassthroughDNSHandler,DNSHandler
 from pprint import pprint as pp
 
-#from . import dnsconf
+from dnsconf import settings
 
 class PCRule(object):
     def __init__(self,**kwargs):
@@ -63,6 +63,7 @@ class ParentalControls(BaseResolver):
             ttl             - default ttl for intercept records
         """
         ## Change to load from saved config
+        print 'WTF: settings:',settings
         self.LOCAL_IP = '127.0.0.1'
         self.LOCAL_PORT = 53
         self.UP_IP = '127.0.1.1'
@@ -72,17 +73,20 @@ class ParentalControls(BaseResolver):
         self.TTL = parse_time('60s')
 
     def start(self):
-        print "Yo!  Starting dnspc!!"
         handler = DNSHandler
         logger = DNSLogger("request,reply,truncated,error",False)
-        self.udp_server = DNSServer(self,
+        print "Starting UDP server"
+        if 'udp_server' not in dir(self):
+            self.udp_server = DNSServer(self,
                             port=self.LOCAL_PORT,
                             address=self.LOCAL_IP,
                             logger=logger,
                             handler=handler)
         self.udp_server.start_thread()
         if self.TCP:
-            self.tcp_server = DNSServer(self,
+            print "Starting TCP server"
+            if 'tcp_server' not in dir(self):
+                self.tcp_server = DNSServer(self,
                                 port=self.LOCAL_PORT,
                                 address=self.LOCAL_IP,
                                 tcp=True,
@@ -91,13 +95,12 @@ class ParentalControls(BaseResolver):
             self.tcp_server.start_thread()
 
     def stop(self):
-        print "Stopping PC"
         print dir(self)
         if 'udp_server' in dir(self):
-            print "    Stopping udp server."
+            print "    Stopping UDP server."
             self.udp_server.stop()
         if 'tcp_server' in dir(self) and self.TCP:
-            print "    Stopping tcp server."
+            print "    Stopping TCP server."
             self.tcp_server.stop()
 
     def add_rule(self,d=None,**kwargs):
