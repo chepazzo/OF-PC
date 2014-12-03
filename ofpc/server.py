@@ -15,10 +15,10 @@ from pprint import pprint as pp
 PC = dnspc.ParentalControls()
 
 @app.route('/')
-def top():
-    return "MISHAP ParentalControls!"
-
-@app.route('/index.html')
+#def top():
+#    return "MISHAP ParentalControls!"
+#
+#@app.route('/index.html')
 def index():
     return render_template('index.html')
 

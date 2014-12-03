@@ -16,6 +16,7 @@ class PCRule(object):
         self.time_start = '*'
         self.time_end = '*'
         self.action = 'block'
+        self.redirect = settings.DNS['REDIRECT']
         #print "WTF: PCRule()"
         for k in kwargs:
             setattr(self,k,kwargs[k])
@@ -55,22 +56,12 @@ class ParentalControls(BaseResolver):
 
     def __init__(self):
         self.rules = []
-        self.load_from_config()
-
-    def load_from_config(self):
-        """
-            address/port    - upstream server
-            ttl             - default ttl for intercept records
-        """
-        ## Change to load from saved config
-        print 'WTF: settings:',settings
-        self.LOCAL_IP = '127.0.0.1'
-        self.LOCAL_PORT = 53
-        self.UP_IP = '127.0.1.1'
-        #self.UP_IP = '8.8.8.8'
-        self.UP_PORT = 53
-        self.TCP = True
-        self.TTL = parse_time('60s')
+        self.LOCAL_IP = settings.DNS['LOCAL_IP']
+        self.LOCAL_PORT = settings.DNS['LOCAL_PORT']
+        self.UP_IP = settings.DNS['UP_IP']
+        self.UP_PORT = settings.DNS['UP_PORT']
+        self.TCP = settings.DNS['TCP']
+        self.TTL = parse_time(settings.DNS['TTL'])
 
     def start(self):
         handler = DNSHandler
@@ -158,12 +149,22 @@ class ParentalControls(BaseResolver):
         #print "query: {}".format(qname)
         #print "query: {}".format(qname.matchGlob("*.yahoo.com"))
         # Try to resolve locally unless on skip list
-        if any(self.get_matching_rules(client_ip,qname)):
+        rules = self.get_matching_rules(client_ip,qname)
+        if any(rules):
+            print "Matched Rules:",[ r.__dict__ for r in rules ]
             ## right now returning nothing
             ## need to change to return based on rule match
             ## (block, redirect, etc)
-            pass
+            for rule in rules:
+                if rule.action == 'redirect':
+                    print "Redirecting",qname,"to:",rule.redirect
+                    redir = rule.redirect
+                    reply.add_answer(*RR.fromZone("{} IN A {}".format(qname,redir)))
+                if rule.action == 'block':
+                    print "Blocking",qname
+                    return reply
         else:
+            ## If no match, then proxy the request to IP_UP
             if handler.protocol == 'udp':
                 proxy_r = request.send(self.UP_IP,self.UP_PORT)
             else:

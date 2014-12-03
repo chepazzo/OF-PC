@@ -15,21 +15,19 @@ class Conf(object):
     def load(self,conffile=CONFFILE):
         print "WTF: dnsconf.load({})".format(conffile)
         self.parser.read(conffile)
-        print "PCCONF:",dir(self.parser)
-        if 'homenet' in self.parser.options('GLOBAL'):
-            HOMENET = build_net_tuple(self.parser.get('GLOBAL', 'HOMENET'))
-        if 'filternet' in self.parser.options('GLOBAL'):
-            FILTERNET = build_net_tuple(self.parser.get('GLOBAL','FILTERNET'))
-        pp(self.parser.options('GLOBAL'))
         for sectname in self.parser.sections():
-            section = Section(sectname)
+            section = {}
             setattr(self,sectname,section)
-            for opt in self.parser.options(sectname):
-               setattr(section,opt,self.parser.get(sectname,opt))
-
-class Section(object):
-    def __init__(self,name):
-        self._name = name
+            opts = self.parser.options(sectname)
+            for opt in opts:
+                val = self.parser.get(sectname,opt)
+                if opt in ['homenet','filternet']:
+                    val = build_net_tuple(val)
+                if opt in ['local_port','up_port','port']:
+                    val = self.parser.getint(sectname,opt)
+                if opt in ['tcp','debug']:
+                    val = self.parser.getboolean(sectname,opt)
+                section[opt.upper()] =val
 
 def build_net_tuple(net):
     ip = IPy.IP(net)

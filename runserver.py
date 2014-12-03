@@ -1,9 +1,7 @@
 #!/usr/bin/env python
-from ofpc import server
-from ofpc import dnspc
-from ofpc import dnsconf
 import sys
 import argparse
+from ofpc import dnsconf
 
 def main():
 
@@ -19,12 +17,13 @@ def main():
 
     settings = dnsconf.settings
     settings.load(args.i)
-    print "Settings: ",settings.__dict__
+    from ofpc import server
+    from ofpc import dnspc
     print "About to start PC"
-    server.PC.start()
+    #server.PC.start()
 
     print "About to start flask"
-    server.app.run(host='0.0.0.0',debug = args.debug)
+    server.app.run(host=settings.WEB['HOST'],port=settings.WEB['PORT'],debug = settings.WEB['DEBUG'])
     ## Nothing else gets executed here
 
 if __name__ == '__main__':
