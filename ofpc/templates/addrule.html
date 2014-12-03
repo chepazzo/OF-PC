@@ -24,8 +24,10 @@ tr.head {
       Days of Week: <input type="text" ng-model="rule.dow" /><br />
       Start Time: <input type="text" ng-model="rule.time_start" /><br />
       End Time: <input type="text" ng-model="rule.time_end" /><br />
+      Redirect: <input type="text" ng-model="rule.redirect" /><br />
       Action: <input type="radio" ng-model="rule.action" value="block" />block
               <input type="radio" ng-model="rule.action" value="allow" />allow<br />
+              <input type="radio" ng-model="rule.action" value="redirect" />redirect<br />
       <button ng-click="reset()">RESET</button>
       <button ng-click="add_rule(rule)">SAVE</button>
     </form>
