@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import argparse
-from ofpc import dnsconf
+from dnspc import dnsconf
 
 def main():
 
@@ -17,8 +17,8 @@ def main():
 
     settings = dnsconf.settings
     settings.load(args.i)
-    from ofpc import server
-    from ofpc import dnspc
+    from dnspc import server
+    from dnspc import dnspc
     print "About to start PC"
     #server.PC.start()
 

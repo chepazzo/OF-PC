@@ -33,12 +33,12 @@ def pcctrljs():
 @app.route('/start')
 def start():
     PC.start()
-    return "OFPC Started!"
+    return "dnspc Started!"
 
 @app.route('/stop')
 def stop():
     PC.stop()
-    return "OFPC Stopped!"
+    return "dnspc Stopped!"
 
 @app.route('/addrule', methods = ['POST'])
 def addrule():

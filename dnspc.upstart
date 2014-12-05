@@ -3,9 +3,9 @@
 ## Use for installing on debian (Ubuntu, mint) as a service
 ##
 ## Install as:
-## /etc/init/opfcontrols.conf
+## /etc/init/dnspc.conf
 ##
 ## To start service manually:
-## service opfcontrols start
+## service dnspc start
 ##
-exec /usr/local/bin/startofpc.sh
+exec /usr/local/bin/startdnspc.sh
