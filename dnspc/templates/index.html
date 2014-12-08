@@ -4,10 +4,6 @@
   <title>Parental Controls</title>
   <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
   <style>
-tr.head {
-    text-align:center;
-    font-weight:bold;
-}
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
   <script src="PCCtrl.js"></script>
@@ -24,14 +20,14 @@ tr.head {
     <div><span class='clickable' ng-click='get_rules()'>Reload</span></div>
     <div id='currrules' class='section'>
      <span class='label'>Rules:</span>
-      <table style='margin:auto'>
+      <table id='rules' style='margin:auto'>
        <tr><th></th><th>Src</th><th>Dst</th><th>When</th><th>Action</th></tr>
           <tr ng-repeat='rule in myrules'>
               <td class='del'><span class='clickable' ng-click='del_rule(rule._uid)' >del</span></td>
-              <td class='src'>{[rule.src_name]}</td>
+              <td class='src'>{[rule.src_name | stripdomain]}</td>
               <td class='dst'>{[rule.dst_str]}</td>
               <td class='when'>{[parsedow(rule.dow)]}: {[rule.time_start]} - {[rule.time_end]}</td>
-              <td class='act'>{[rule.action]}</td>
+              <td class='act'><span class='{[rule.action]}'>{[rule.action]}</span></td>
           </tr>
       </table>
     </div><!-- id='currrules' -->

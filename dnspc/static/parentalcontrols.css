@@ -28,3 +28,18 @@
     margin-top: 5px;
  }
 
+tr.head {
+    text-align:center;
+    font-weight:bold;
+}
+
+/* Rules */
+#currrules table#rules td.src {
+    font-weight: bold;
+}
+#currrules table#rules td.act span.block {
+    color: red;
+}
+#currrules table#rules td.act span.allow {
+    color: green;
+}

@@ -64,3 +64,10 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
     $scope.get_rules();
 });
 
+pcApp.filter('stripdomain', function () {
+  return function (item) {
+      console.log('stripdomain');
+      console.log(item);
+      return item.split(".")[0];
+  };
+});
