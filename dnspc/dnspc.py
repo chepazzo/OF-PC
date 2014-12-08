@@ -1,5 +1,6 @@
 # coding=utf-8
 import time
+import socket
 import copy,sys
 from dnslib import DNSRecord,RR,QTYPE,RCODE,parse_time
 from dnslib.server import DNSServer,DNSHandler,BaseResolver,DNSLogger
@@ -20,6 +21,7 @@ class PCRule(object):
         #print "WTF: PCRule()"
         for k in kwargs:
             setattr(self,k,kwargs[k])
+        self.src_name = socket.getfqdn(self.src_ip)
     def is_match(self,src_ip=None,dst_str=None):
         ## put in a for loop to verify each value is a match
         #print "does {} from {} match {} from {}".format(dst_str,src_ip,self.dst_str,self.src_ip)
