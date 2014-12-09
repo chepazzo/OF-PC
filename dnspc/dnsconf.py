@@ -1,6 +1,7 @@
 from oslo.config.cfg import OptGroup
 import ConfigParser
 import IPy
+from filestore import FileStore
 from pprint import pprint as pp
  
 CONFFILE = 'config/example.cfg'
@@ -21,6 +22,8 @@ class Conf(object):
             opts = self.parser.options(sectname)
             for opt in opts:
                 val = self.parser.get(sectname,opt)
+                if sectname == 'DATA':
+                    val = load_datastore(val)
                 if opt in ['homenet','filternet']:
                     val = build_net_tuple(val)
                 if opt in ['local_port','up_port','port']:
@@ -28,6 +31,11 @@ class Conf(object):
                 if opt in ['tcp','debug']:
                     val = self.parser.getboolean(sectname,opt)
                 section[opt.upper()] =val
+
+def load_datastore(path):
+    f = FileStore()
+    f.setFilename(path)
+    return f
 
 def build_net_tuple(net):
     ip = IPy.IP(net)
