@@ -21,14 +21,19 @@
     <div id='currrules' class='section'>
      <span class='label'>Rules:</span>
       <table id='rules' style='margin:auto'>
-       <tr><th></th><th>Src</th><th>Dst</th><th>When</th><th>Action</th></tr>
-          <tr ng-repeat='rule in myrules'>
-              <td class='del'><span class='clickable' ng-click='del_rule(rule._uid)' >del</span></td>
-              <td class='src'>{[rule.src_name | stripdomain]}</td>
-              <td class='dst'>{[rule.dst_str]}</td>
-              <td class='when'>{[parsedow(rule.dow)]}: {[rule.time_start]} - {[rule.time_end]}</td>
-              <td class='act'><span class='{[rule.action]}'>{[rule.action]}</span></td>
-          </tr>
+       <tr><th></th>
+          <th ng:click="changeSorting('src_name')">Src</th>
+          <th ng:click="changeSorting('dst_str')">Dst</th>
+          <th ng:click="changeSorting('dow')">When</th>
+          <th ng:click="changeSorting('action')">Action</th>
+       </tr>
+       <tr ng-repeat='rule in myrules | orderBy:sort.column:sort.descending'>
+          <td class='del'><span class='clickable' ng-click='del_rule(rule._uid)' >del</span></td>
+          <td class='src'>{[rule.src_name | stripdomain]}</td>
+          <td class='dst'>{[rule.dst_str]}</td>
+          <td class='when'>{[parsedow(rule.dow)]}: {[rule.time_start]} - {[rule.time_end]}</td>
+          <td class='act'><span class='{[rule.action]}'>{[rule.action]}</span></td>
+       </tr>
       </table>
     </div><!-- id='currrules' -->
    </div>

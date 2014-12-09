@@ -61,13 +61,26 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
         return newdow.join(',');
     };
 
+    $scope.sort = { 'column':'src_name','descending': false };
+
+    $scope.changeSorting = function(column) {
+        var sort = $scope.sort;
+
+        if (sort.column == column) {
+            sort.descending = !sort.descending;
+        } else {
+            sort.column = column;
+            sort.descending = false;
+        }
+    };
+
     $scope.get_rules();
 });
 
 pcApp.filter('stripdomain', function () {
   return function (item) {
-      console.log('stripdomain');
-      console.log(item);
+      //console.log('stripdomain');
+      //console.log(item);
       return item.split(".")[0];
   };
 });

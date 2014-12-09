@@ -15,15 +15,20 @@ def main():
     from dnspc import server
     from dnspc import dnspc
 
+    debug = settings.WEB['DEBUG']
+
     if args.debug is True:
+        debug = True
+
+    if debug:
         print "Flask DEBUG"
     else:
+        print "Flask Production"
         print "Starting PC"
         server.PC.start()
-        print "Flask Production"
 
-    print "About to start flask"
-    server.app.run(host=settings.WEB['HOST'],port=settings.WEB['PORT'],debug = settings.WEB['DEBUG'])
+    print "Starting flask"
+    server.app.run(host=settings.WEB['HOST'],port=settings.WEB['PORT'],debug = debug)
     ## Nothing else gets executed here
 
 if __name__ == '__main__':
