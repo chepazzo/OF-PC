@@ -9,6 +9,8 @@ app = Flask(__name__)
 import dnspc
 from dnsconf import settings
 import os
+from flask import request
+from flask import jsonify
 import json
 from pprint import pprint as pp
 
@@ -29,16 +31,6 @@ def addrulehtml():
 @app.route('/PCCtrl.js')
 def pcctrljs():
     return render_template('PCCtrl.js')
-
-@app.route('/start')
-def start():
-    PC.start()
-    return "dnspc Started!"
-
-@app.route('/stop')
-def stop():
-    PC.stop()
-    return "dnspc Stopped!"
 
 @app.route('/addrule', methods = ['POST'])
 def addrule():
@@ -61,6 +53,22 @@ def get_rules():
     rules = PC.get_rules()
     retval = [s._serialize() for s in PC.rules]
     return json.dumps(succ(value=retval))
+
+@app.route('/onboard')
+def onboard():
+    '''/onboard is a page to allow a user to set a hostname, etc for a given device'''
+    return render_template('onboard.html',
+        ip=request.remote_addr)
+
+@app.route('/start')
+def start():
+    PC.start()
+    return "dnspc Started!"
+
+@app.route('/stop')
+def stop():
+    PC.stop()
+    return "dnspc Stopped!"
 
 def succ(field='data',value=''):
     ''' {'stat':'ok', 'data':{} '''
