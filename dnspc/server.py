@@ -35,7 +35,7 @@ def pcctrljs():
 @app.route('/addrule', methods = ['POST'])
 def addrule():
     rule = PC.add_rule(**request.json)
-    return json.dumps(succ(value=rule._serialize()))
+    return jsonify(succ(value=rule._serialize()))
 
 @app.route('/delrule', methods = ['POST'])
 def delrule():
@@ -46,13 +46,13 @@ def delrule():
         ret = fail('Unable to delete rule {}'.format(uid))
     else:
         ret = succ(value=uid)
-    return json.dumps(ret)
+    return jsonify(ret)
 
 @app.route('/get/rules')
 def get_rules():
     rules = PC.get_rules()
     retval = [s._serialize() for s in PC.rules]
-    return json.dumps(succ(value=retval))
+    return jsonify(succ(value=retval))
 
 @app.route('/onboard')
 def onboard():
