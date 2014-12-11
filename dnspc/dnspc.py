@@ -190,7 +190,10 @@ class ParentalControls(BaseResolver):
     ## DNS Server Methods
     def start(self):
         handler = DNSHandler
-        logger = DNSLogger("request,reply,truncated,error",False)
+        # log options: "recv,send,request,reply,truncated,error,data"
+        # log defaults: "request,reply,truncated,error"
+        # It's just too much stuff!
+        logger = DNSLogger("truncated,error",True)
         print "Starting UDP server"
         if 'udp_server' not in dir(self):
             self.udp_server = DNSServer(self,
