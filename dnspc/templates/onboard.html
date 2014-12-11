@@ -1,0 +1,50 @@
+<!doctype html>
+<html ng-app='pcApp'>
+ <head>
+  <title>Parental Controls</title>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
+  <style>
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+  <script src="HostCtrl.js"></script>
+ </head>
+ <body>
+  <div id='head'>
+   <div id='title'>Parental Controls</div>
+  </div><!-- id='head' -->
+  <div id='body'>
+   <div id=HostCtrl ng-controller="HostCtrl">
+    <div><span class='clickable' ng-click='get_hosts()'>Reload</span></div>
+    <div id='currhosts' class='section'>
+     <span class='label'>Rules:</span>
+      <form novalidate class="simple-form">
+       <table id='hosts' style='margin:auto'>
+        <tr><th></th>
+           <th ng:click="changeSorting('name')">Name</th>
+           <th ng:click="changeSorting('ip')">IP</th>
+           <th ng:click="changeSorting('mac')">MAC</th>
+           <th ng:click="changeSorting('owner')">Owner</th>
+        </tr>
+        <tr>
+           <td><button ng-click="add_host(host)">add</button></td>
+           <td><input type="text" ng-model="host.name" value='{{hostname}}'/></td>
+           <td><input type="text" ng-model="host.ip" value='{{ip}}'/></td>
+           <td><input type="text" ng-model="host.mac" value='{{mac}}'/></td>
+           <td><input type="text" ng-model="host.owner" value=''/></td>
+        </tr>
+        <tr ng-repeat='host in myhosts | orderBy:sort.column:sort.descending'>
+           <td class='del'><span class='clickable' ng-click='del_host(host._uid)' >del</span></td>
+           <td class='name'>{[host.name]}</td>
+           <td class='ip'>{[host.ip]}</td>
+           <td class='mac'>{[host.mac]}</td>
+           <td class='owner'><span class='{[host.owner]}'>{[host.owner]}</span></td>
+        </tr>
+       </table>
+      </form>
+    </div><!-- id='currhosts' -->
+   </div>
+  </div><!-- id='body' -->
+  <script>
+  </script>
+ </body>
+</html>

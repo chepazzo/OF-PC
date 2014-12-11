@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 import dnspc
 from dnsconf import settings
+from utils import net
 import os
 from flask import request
 from flask import jsonify
@@ -16,11 +17,12 @@ from pprint import pprint as pp
 
 PC = dnspc.ParentalControls()
 
+## Pages
+
 @app.route('/')
-#def top():
-#    return "MISHAP ParentalControls!"
-#
-#@app.route('/index.html')
+def top():
+    return render_template('index.html')
+@app.route('/index.html')
 def index():
     return render_template('index.html')
 
@@ -31,6 +33,21 @@ def addrulehtml():
 @app.route('/PCCtrl.js')
 def pcctrljs():
     return render_template('PCCtrl.js')
+
+@app.route('/HostCtrl.js')
+def pcctrljs():
+    return render_template('HostCtrl.js')
+
+@app.route('/onboard')
+def onboard():
+    '''/onboard is a page to allow a user to set a hostname, etc for a given device'''
+    ip = request.remote_addr
+    mac = net.get_mac_addr(ip)
+    hostname = net.get_hostname(ip)
+    return render_template('onboard.html',
+        ip=ip,mac=mac,hostname=hostname)
+
+## API
 
 @app.route('/addrule', methods = ['POST'])
 def addrule():
@@ -54,11 +71,29 @@ def get_rules():
     retval = [s._serialize() for s in PC.rules]
     return jsonify(succ(value=retval))
 
-@app.route('/onboard')
-def onboard():
-    '''/onboard is a page to allow a user to set a hostname, etc for a given device'''
-    return render_template('onboard.html',
-        ip=request.remote_addr)
+@app.route('/addhost', methods = ['POST'])
+def addhost():
+    host = PC.add_host(**request.json)
+    return jsonify(succ(value=host._serialize()))
+
+@app.route('/delhost', methods = ['POST'])
+def delhost():
+    args = request.json
+    uid = args['uid']
+    res = PC.del_host(uid)
+    if res == False:
+        ret = fail('Unable to delete host {}'.format(uid))
+    else:
+        ret = succ(value=uid)
+    return jsonify(ret)
+
+@app.route('/get/hosts')
+def get_hosts():
+    hosts = PC.get_hosts()
+    retval = [s._serialize() for s in PC.hosts]
+    return jsonify(succ(value=retval))
+
+## start/stop
 
 @app.route('/start')
 def start():
