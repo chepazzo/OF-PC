@@ -35,8 +35,8 @@ class PCRule(DataObj):
         self.time_end = '*'
         self.action = 'block'
         self.redirect = None
-        self.src_name = get_name_from_ip(self.src_ip)
         super(PCRule, self).__init__(**kwargs)
+        self.src_name = get_name_from_ip(self.src_ip)
     def is_match(self,src_ip=None,dst_str=None):
         if src_ip != self.src_ip:
             return False

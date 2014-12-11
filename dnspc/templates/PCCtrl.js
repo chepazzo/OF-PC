@@ -6,6 +6,17 @@ pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
   }]);
 
 pcApp.controller('PCCtrl', function ($scope,$http) {
+
+    $scope.newrule = {
+        'src_ip':'',
+        'dst_str':'*',
+        'dow':'*',
+        'time_start':'*',
+        'time_end':'*',
+        'redirect':'',
+        'action':'block'
+    };
+
     $scope.add_rule = function(data) {
         var url = '{{url_for('addrule')}}';
         var method = 'POST';
@@ -49,6 +60,20 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
             console.log(status);
         });
     };
+    $scope.get_hosts = function() {
+        var url = '{{url_for('get_hosts')}}';
+        var method = 'GET';
+        $http(
+            {method: method, url: url}
+        ).success(function(data, status) {
+            //gotRules(data,status);
+            $scope.myhosts = data.data;
+            console.log(data.data);
+        }).error(function(data, status) {
+            console.log('ERROR');
+            console.log(data);
+        });
+    };
 
     $scope.parsedow = function(dow) {
         var a = ['S','M','T','W','T','F','S'];
@@ -75,6 +100,7 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
     };
 
     $scope.get_rules();
+    $scope.get_hosts();
 });
 
 pcApp.filter('stripdomain', function () {

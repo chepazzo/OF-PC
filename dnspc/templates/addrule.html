@@ -19,17 +19,20 @@ tr.head {
   <div id='body'>
    <div id=PCCtrl ng-controller="PCCtrl">
     <form novalidate class="simple-form">
-      Source: <input type="text" ng-model="rule.src_ip" /><br />
-      Destination: <input type="text" ng-model="rule.dst_str" /><br />
-      Days of Week: <input type="text" ng-model="rule.dow" /><br />
-      Start Time: <input type="text" ng-model="rule.time_start" /><br />
-      End Time: <input type="text" ng-model="rule.time_end" /><br />
-      Redirect: <input type="text" ng-model="rule.redirect" /><br />
-      Action: <input type="radio" ng-model="rule.action" value="block" />block
-              <input type="radio" ng-model="rule.action" value="allow" />allow<br />
-              <input type="radio" ng-model="rule.action" value="redirect" />redirect<br />
+      Source: <input class="form-control" list="IPs" type="text" ng-model="newrule.src_ip" /><br />
+      Destination: <input type="text" ng-model="newrule.dst_str" /><br />
+      Days of Week: <input type="text" ng-model="newrule.dow" /><br />
+      Start Time: <input type="text" ng-model="newrule.time_start" /><br />
+      End Time: <input type="text" ng-model="newrule.time_end" /><br />
+      Redirect: <input type="text" ng-model="newrule.redirect" /><br />
+      Action: <input type="radio" ng-model="newrule.action" value="block" />block
+              <input type="radio" ng-model="newrule.action" value="allow" />allow<br />
+              <input type="radio" ng-model="newrule.action" value="redirect" />redirect<br />
       <button ng-click="reset()">RESET</button>
-      <button ng-click="add_rule(rule)">SAVE</button>
+      <button ng-click="add_rule(newrule)">SAVE</button>
+      <datalist id="IPs">
+        <option ng-repeat='host in myhosts' value="{[host.ip]}">{[host.name]}</option>
+      </datalist>
     </form>
     <pre>form = {[rule | json]}</pre>
    </div>

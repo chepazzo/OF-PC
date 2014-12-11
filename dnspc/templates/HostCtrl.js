@@ -7,7 +7,6 @@ pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
 
 pcApp.controller('HostCtrl', function ($scope,$http) {
 
-    $scope.rule = "yo";
     $scope.newhost = {
         "name":"{{hostname}}",
         "ip":"{{ip}}",
