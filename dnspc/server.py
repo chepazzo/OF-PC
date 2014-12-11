@@ -35,17 +35,22 @@ def pcctrljs():
     return render_template('PCCtrl.js')
 
 @app.route('/HostCtrl.js')
-def pcctrljs():
-    return render_template('HostCtrl.js')
+def hostctrljs():
+    ip = request.remote_addr
+    mac = net.get_mac_addr(ip)
+    hostname = net.get_hostname(ip)
+    return render_template('HostCtrl.js',
+        ip=ip,mac=mac,hostname=hostname)
 
 @app.route('/onboard')
 def onboard():
     '''/onboard is a page to allow a user to set a hostname, etc for a given device'''
-    ip = request.remote_addr
-    mac = net.get_mac_addr(ip)
-    hostname = net.get_hostname(ip)
-    return render_template('onboard.html',
-        ip=ip,mac=mac,hostname=hostname)
+    #ip = request.remote_addr
+    #mac = net.get_mac_addr(ip)
+    #hostname = net.get_hostname(ip)
+    #return render_template('onboard.html',
+    #    ip=ip,mac=mac,hostname=hostname)
+    return render_template('onboard.html')
 
 ## API
 

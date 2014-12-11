@@ -16,7 +16,7 @@
    <div id=HostCtrl ng-controller="HostCtrl">
     <div><span class='clickable' ng-click='get_hosts()'>Reload</span></div>
     <div id='currhosts' class='section'>
-     <span class='label'>Rules:</span>
+     <span class='label'>Hosts:</span>
       <form novalidate class="simple-form">
        <table id='hosts' style='margin:auto'>
         <tr><th></th>
@@ -26,11 +26,11 @@
            <th ng:click="changeSorting('owner')">Owner</th>
         </tr>
         <tr>
-           <td><button ng-click="add_host(host)">add</button></td>
-           <td><input type="text" ng-model="host.name" value='{{hostname}}'/></td>
-           <td><input type="text" ng-model="host.ip" value='{{ip}}'/></td>
-           <td><input type="text" ng-model="host.mac" value='{{mac}}'/></td>
-           <td><input type="text" ng-model="host.owner" value=''/></td>
+           <td><button ng-click="add_host(newhost)">add</button></td>
+           <td><input type="text" ng-model="newhost.name" /></td>
+           <td><input type="text" ng-model="newhost.ip" /></td>
+           <td><input type="text" ng-model="newhost.mac" /></td>
+           <td><input type="text" ng-model="newhost.owner" /></td>
         </tr>
         <tr ng-repeat='host in myhosts | orderBy:sort.column:sort.descending'>
            <td class='del'><span class='clickable' ng-click='del_host(host._uid)' >del</span></td>
@@ -41,6 +41,8 @@
         </tr>
        </table>
       </form>
+    <pre>form = {[newhost | json]}</pre>
+    <pre>rule = {[rule | json]}</pre>
     </div><!-- id='currhosts' -->
    </div>
   </div><!-- id='body' -->

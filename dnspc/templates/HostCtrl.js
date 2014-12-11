@@ -7,6 +7,14 @@ pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
 
 pcApp.controller('HostCtrl', function ($scope,$http) {
 
+    $scope.rule = "yo";
+    $scope.newhost = {
+        "name":"{{hostname}}",
+        "ip":"{{ip}}",
+        "mac":"{{mac}}",
+        "owner":""
+    };
+
     $scope.add_host = function(data) {
         var url = '{{url_for('addhost')}}';
         var method = 'POST';
