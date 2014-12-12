@@ -6,6 +6,7 @@
   <style>
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+  <script src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
   <script src="PCCtrl.js"></script>
  </head>
  <body>
@@ -13,9 +14,6 @@
    <div id='title'>Parental Controls</div>
   </div><!-- id='head' -->
   <div id='body'>
-    <div id='addrule' class='section'>
-     <a href='/addrule.html'>Add Rule</a>
-    </div><!-- id='addrule' -->
    <div id=PCCtrl ng-controller="PCCtrl">
     <div><span class='clickable' ng-click='get_rules()'>Reload</span></div>
     <div id='currrules' class='section'>
@@ -27,14 +25,36 @@
           <th ng:click="changeSorting('dow')">When</th>
           <th ng:click="changeSorting('action')">Action</th>
        </tr>
+       <tr>
+          <td><button ng-click="add_rule(newrule)">add</button></td>
+          <td><input class="form-control" list="IPs" type="text" ng-model="newrule.src_ip" />
+          <td><input type="text" ng-model="newrule.dst_str" ng-click="lognewrule(newrule)"/>
+          <td><label ng-repeat="d in dows">
+               <input type="checkbox" checklist-model="newrule.dow" checklist-value="d.val" />{[d.label]}
+              </label><br>
+              <input type="time" ng-model="newrule.time_start" />
+              <input type="time" ng-model="newrule.time_end" />
+          </td>
+          <td><input type="radio" ng-model="newrule.action" value="block" />block
+              <input type="radio" ng-model="newrule.action" value="allow" />allow<br />
+              <input type="radio" ng-model="newrule.action" value="redirect" />redirect<br />
+          </td>
+          <td><input type="text" ng-model="newrule.redirect" />
+       </tr>
        <tr ng-repeat='rule in myrules | orderBy:sort.column:sort.descending'>
-          <td class='del'><span class='clickable' ng-click='del_rule(rule._uid)' >del</span></td>
+          <td class='del'>
+           <span class='clickable' ng-click='del_rule(rule._uid)' >del</span>
+           <span class='clickable' ng-click='edit_rule(rule)' >edit</span>
+          </td>
           <td class='src'>{[rule.src_name | stripdomain]}</td>
           <td class='dst'>{[rule.dst_str]}</td>
           <td class='when'>{[parsedow(rule.dow)]}: {[rule.time_start]} - {[rule.time_end]}</td>
           <td class='act'><span class='{[rule.action]}'>{[rule.action]}</span></td>
        </tr>
       </table>
+      <datalist id="IPs">
+        <option ng-repeat='host in myhosts' value="{[host.ip]}">{[host.name]}</option>
+      </datalist>
     </div><!-- id='currrules' -->
    </div>
   </div><!-- id='body' -->

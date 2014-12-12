@@ -1,4 +1,4 @@
-var pcApp = angular.module('pcApp', []);
+var pcApp = angular.module('pcApp', ["checklist-model"]);
 
 pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
     $interpolateProvider.startSymbol('{[');
@@ -10,11 +10,27 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
     $scope.newrule = {
         'src_ip':'',
         'dst_str':'*',
-        'dow':'*',
+        'dow':[],
         'time_start':'*',
         'time_end':'*',
         'redirect':'',
         'action':'block'
+    };
+    $scope.dows = [
+        {'val':0,'label':'S'},
+        {'val':1,'label':'M'},
+        {'val':2,'label':'T'},
+        {'val':3,'label':'W'},
+        {'val':4,'label':'T'},
+        {'val':5,'label':'F'},
+        {'val':6,'label':'S'}
+    ];
+    $scope.edit_rule = function(rule) {
+        $scope.newrule = rule;
+    };
+    $scope.lognewrule = function(rule) {
+        console.log(rule);
+        console.log($scope.newrule);
     };
 
     $scope.add_rule = function(data) {
