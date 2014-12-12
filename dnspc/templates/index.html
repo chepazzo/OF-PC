@@ -4,6 +4,9 @@
   <title>Parental Controls</title>
   <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
   <style>
+table.dow td {
+    text-align:center;
+}
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
   <script src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
@@ -16,7 +19,12 @@
   <div id='body'>
    <div id=PCCtrl ng-controller="PCCtrl">
     <div><span class='clickable' ng-click='get_rules()'>Reload</span></div>
-    <div id='currrules' class='section'>
+    <ul ng-init="tab = 1">
+      <li ng-class="{active:tab===1}"><span ng-click="tab = 1">Rules</span></li>
+      <li ng-class="{active:tab===2}"><span ng-click="tab = 2">Hosts</span></li>
+    </ul>
+    <div id='currhosts' class='section' ng-show="tab===2">A place for my hosts</div>
+    <div id='currrules' class='section' ng-show="tab===1">
      <span class='label'>Rules:</span>
       <table id='rules' style='margin:auto'>
        <tr><th></th>
@@ -29,17 +37,23 @@
           <td><button ng-click="add_rule(newrule)">add</button></td>
           <td><input class="form-control" list="IPs" type="text" ng-model="newrule.src_ip" />
           <td><input type="text" ng-model="newrule.dst_str" ng-click="lognewrule(newrule)"/>
-          <td><label ng-repeat="d in dows">
-               <input type="checkbox" checklist-model="newrule.dow" checklist-value="d.val" />{[d.label]}
-              </label><br>
-              <input type="time" ng-model="newrule.time_start" />
-              <input type="time" ng-model="newrule.time_end" />
+          <td align=center>
+            <table cellpadding=0 class='dow'>
+              <tr><td ng-repeat="d in dows">{[d.label]}</td></tr>
+              <tr>
+               <td ng-repeat="d in dows">
+                <input type="checkbox" checklist-model="newrule.dow" checklist-value="d.val" />
+               </td>
+              </tr>
+            </table>
+            <input type="time" ng-model="newrule.time" />
+            <input type="time" ng-model="newrule.time_end" />
           </td>
           <td><input type="radio" ng-model="newrule.action" value="block" />block
               <input type="radio" ng-model="newrule.action" value="allow" />allow<br />
               <input type="radio" ng-model="newrule.action" value="redirect" />redirect<br />
           </td>
-          <td><input type="text" ng-model="newrule.redirect" />
+          <!-- <td><input type="text" ng-model="newrule.redirect" /></td> -->
        </tr>
        <tr ng-repeat='rule in myrules | orderBy:sort.column:sort.descending'>
           <td class='del'>

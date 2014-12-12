@@ -11,8 +11,8 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
         'src_ip':'',
         'dst_str':'*',
         'dow':[],
-        'time_start':'*',
-        'time_end':'*',
+        'time_start':'',
+        'time_end':'',
         'redirect':'',
         'action':'block'
     };
