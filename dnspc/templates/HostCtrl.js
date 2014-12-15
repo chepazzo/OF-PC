@@ -1,19 +1,41 @@
-var pcApp = angular.module('pcApp', []);
+if ( typeof pcApp == "undefined" ) {
 
-pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
-    $interpolateProvider.startSymbol('{[');
-    $interpolateProvider.endSymbol(']}');
-  }]);
+    var pcApp = angular.module('pcApp', ["checklist-model"]);
 
-pcApp.controller('HostCtrl', function ($scope,$http) {
+    pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
+        $interpolateProvider.startSymbol('{[');
+        $interpolateProvider.endSymbol(']}');
+      }]);
+    pcApp.run(function($rootScope) {
+        $rootScope.section = 'currrules';
+    });
 
+    //pcApp.controller('RootCtrl', function ($scope,$rootScope) {
+    //    $rootScope.section = 'currhosts';
+    //});
+}
+//console.log("HostCtrl");
+//console.log(pcApp);
+//var pcApp = angular.module('pcApp', []);
+
+pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
+
+    $scope.issection = function(sect) {
+        if ($rootScope.section == sect) { return true; }
+        return false;
+    };
+    $scope.setsection = function(sect) {
+        $rootScope.section = sect;
+    };
     $scope.newhost = {
         "name":"{{hostname}}",
         "ip":"{{ip}}",
         "mac":"{{mac}}",
         "owner":""
     };
-
+    $scope.edit_host = function(host) {
+        $scope.newhost = host;
+    };
     $scope.add_host = function(data) {
         var url = '{{url_for('addhost')}}';
         var method = 'POST';

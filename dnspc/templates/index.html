@@ -4,10 +4,17 @@
   <title>Parental Controls</title>
   <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
   <style>
+.section { border:solid thin black; width:500px; height:220px;}
+#addrule td.label { text-align: right; font-weight:bold; }
+.active { color:red; }
+input.text { width:99px; height:15px; border:solid 1px gray; padding: 1px; }
+input.text { font-size:13px; }
+button { font-size:13px; }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
   <script src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
   <script src="PCCtrl.js"></script>
+  <script src="HostCtrl.js"></script>
  </head>
  <body>
   <div id='head'>
@@ -15,9 +22,14 @@
   </div><!-- id='head' -->
   <div id='body'>
    <div id=PCCtrl ng-controller="PCCtrl">
-    <div><span class='clickable' ng-click='get_rules()'>Reload</span></div>
-    <div id='currrules' class='section'>
-     <span class='label'>Rules:</span>
+<ol>
+<li class='clickable' ng-click="setsection('currrules');" ng-class="{'active':issection('currrules')}">Rules</li>
+<li class='clickable' ng-click="setsection('currhosts');" ng-class="{'active':issection('currhosts')}">Hosts</li>
+<li class='clickable' ng-click="setsection('addrule');" ng-class="{'active':issection('addrule')}">Add Rule</li>
+</ol>
+
+    <div id='currrules' class='section' ng-show="issection('currrules')">
+      <div><span class='clickable' ng-click='console.log("get_rules"); get_rules()'>Reload Rules</span></div>
       <table id='rules' style='margin:auto'>
        <tr><th></th>
           <th ng:click="changeSorting('src_name')">Src</th>
@@ -25,26 +37,10 @@
           <th ng:click="changeSorting('dow')">When</th>
           <th ng:click="changeSorting('action')">Action</th>
        </tr>
-       <tr>
-          <td><button ng-click="add_rule(newrule)">add</button></td>
-          <td><input class="form-control" list="IPs" type="text" ng-model="newrule.src_ip" />
-          <td><input type="text" ng-model="newrule.dst_str" ng-click="lognewrule(newrule)"/>
-          <td><label ng-repeat="d in dows">
-               <input type="checkbox" checklist-model="newrule.dow" checklist-value="d.val" />{[d.label]}
-              </label><br>
-              <input type="time" ng-model="newrule.time_start" />
-              <input type="time" ng-model="newrule.time_end" />
-          </td>
-          <td><input type="radio" ng-model="newrule.action" value="block" />block
-              <input type="radio" ng-model="newrule.action" value="allow" />allow<br />
-              <input type="radio" ng-model="newrule.action" value="redirect" />redirect<br />
-          </td>
-          <td><input type="text" ng-model="newrule.redirect" />
-       </tr>
        <tr ng-repeat='rule in myrules | orderBy:sort.column:sort.descending'>
           <td class='del'>
            <span class='clickable' ng-click='del_rule(rule._uid)' >del</span>
-           <span class='clickable' ng-click='edit_rule(rule)' >edit</span>
+           <span class='clickable' ng-click='edit_rule(rule); setsection("addrule")' >edit</span>
           </td>
           <td class='src'>{[rule.src_name | stripdomain]}</td>
           <td class='dst'>{[rule.dst_str]}</td>
@@ -56,7 +52,64 @@
         <option ng-repeat='host in myhosts' value="{[host.ip]}">{[host.name]}</option>
       </datalist>
     </div><!-- id='currrules' -->
-   </div>
+
+    <div id='addrule' class='section' ng-show="issection('addrule')">
+     <form novalidate class="simple-form">
+      <button ng-click="add_rule(newrule); setsection('currrules');">save</button>
+      <table id='addrule' style='margin:auto'>
+       <tr><td class='label'>Src IP:</td><td><input class="text form-control" list="IPs" type="text" ng-model="newrule.src_ip" /></td></tr>
+       <tr><td class='label'>Dst Str:</td><td><input class="text" type="text" ng-model="newrule.dst_str" ng-click="lognewrule(newrule)"/></td></tr>
+       <tr><td class='label'>When:</td>
+           <td><label ng-repeat="d in dows">
+                <input type="checkbox" checklist-model="newrule.dow" checklist-value="d.val" />{[d.label]}
+               </label><br />
+               <input class="text" type="time" style='width:100px' ng-model="newrule.time_start" />
+               <input class="text" type="time" style='width:100px' ng-model="newrule.time_end" />
+           </td>
+       </tr>
+       <tr><td class='label'>Action</td>
+           <td><input type="radio" ng-model="newrule.action" value="block" />block<br />
+               <input type="radio" ng-model="newrule.action" value="allow" />allow<br />
+               <input type="radio" ng-model="newrule.action" value="redirect" />redirect
+               <input class="text" type="text" ng-show="newrule.action == 'redirect'" ng-model="newrule.redirect" />
+           </td>
+       </tr>
+      </table>
+     </form>
+    </div><!-- id='addrule' -->
+   </div><!-- id='PCCtrl' -->
+   <div id='HostCtrl' ng-controller="HostCtrl">
+    <div id='currhosts' class='section' ng-show="issection('currhosts')">
+      <div><span class='clickable' ng-click='console.log("get_hosts"); get_hosts()'>Reload Hosts</span></div>
+      <form novalidate class="simple-form">
+       <table id='hosts' style='margin:auto'>
+        <tr><th></th>
+           <th ng:click="changeSorting('name')">Name</th>
+           <th ng:click="changeSorting('ip')">IP</th>
+           <th ng:click="changeSorting('mac')">MAC</th>
+           <th ng:click="changeSorting('owner')">Owner</th>
+        </tr>
+        <tr class='addnew'>
+           <td><button ng-click="add_host(newhost)">save</button></td>
+           <td><input class="text" type="text" ng-model="newhost.name" /></td>
+           <td><input class="text" type="text" ng-model="newhost.ip" /></td>
+           <td><input class="text" type="text" ng-model="newhost.mac" /></td>
+           <td><input class="text" type="text" ng-model="newhost.owner" /></td>
+        </tr>
+        <tr ng-repeat='host in myhosts | orderBy:sort.column:sort.descending'>
+           <td class='del'>
+            <span class='clickable' ng-click='del_host(host._uid)' >del</span>
+            <span class='clickable' ng-click='edit_host(host)' >edit</span>
+           </td>
+           <td class='name'>{[host.name]}</td>
+           <td class='ip'>{[host.ip]}</td>
+           <td class='mac'>{[host.mac]}</td>
+           <td class='owner'><span class='{[host.owner]}'>{[host.owner]}</span></td>
+        </tr>
+       </table>
+      </form>
+    </div><!-- id='currhosts' class='section' -->
+   </div><!-- id='HostCtrl' -->
   </div><!-- id='body' -->
   <script>
   </script>

@@ -1,12 +1,30 @@
-var pcApp = angular.module('pcApp', ["checklist-model"]);
+if ( typeof pcApp == "undefined" ) {
 
-pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
-    $interpolateProvider.startSymbol('{[');
-    $interpolateProvider.endSymbol(']}');
-  }]);
+    var pcApp = angular.module('pcApp', ["checklist-model"]);
 
-pcApp.controller('PCCtrl', function ($scope,$http) {
+    pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
+        $interpolateProvider.startSymbol('{[');
+        $interpolateProvider.endSymbol(']}');
+      }]);
+    pcApp.run(function($rootScope) {
+        $rootScope.section = 'currrules';
+    });
+    //pcApp.controller('RootCtrl', function ($scope,$rootScope) {
+    //    $rootScope.section = 'currhosts';
+    //});
+}
+//console.log("PCCtrl");
+//console.log(pcApp);
 
+pcApp.controller('PCCtrl', function ($scope,$rootScope,$http) {
+
+    $scope.issection = function(sect) {
+        if ($rootScope.section == sect) { return true; }
+        return false;
+    };
+    $scope.setsection = function(sect) {
+        $rootScope.section = sect;
+    };
     $scope.newrule = {
         'src_ip':'',
         'dst_str':'*',
@@ -94,7 +112,10 @@ pcApp.controller('PCCtrl', function ($scope,$http) {
     $scope.parsedow = function(dow) {
         var a = ['S','M','T','W','T','F','S'];
         var newdow = [];
-        var dows = dow.split(',');
+        var dows = dow;
+        if (typeof(dow) == 'string') {
+            dows = dow.split(',');
+        }
         for (i=0; i<dows.length; i++) {
             var d = parseInt(dows[i]);
             newdow.push(a[d]);

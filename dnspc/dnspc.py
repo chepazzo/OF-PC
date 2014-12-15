@@ -107,7 +107,6 @@ class ParentalControls(BaseResolver):
             self.rules[idxs[0]] = rule
         return rule
 
-
     def add_rule(self,d=None,**kwargs):
         #print "add_rule({})".format(kwargs)
         ## Remove angularjs artifacts:
@@ -151,6 +150,14 @@ class ParentalControls(BaseResolver):
                 continue
             rule = PCHost(**sr)
             self.hosts.append(rule)
+    def update_host(self,host):
+        uid = host._uid
+        idxs = [i for i,c in enumerate(self.hosts) if c._uid == uid]
+        if len(idxs) == 0:
+            self.hosts.append(host)
+        else:
+            self.hosts[idxs[0]] = host
+        return host
 
     def add_host(self,d=None,**kwargs):
         #print "add_host({})".format(kwargs)
@@ -158,10 +165,11 @@ class ParentalControls(BaseResolver):
         ## Can't risk overlap.
         #key = self._genkey(self.hosts)
         #print "WTF: Created key:",key
+        kwargs.pop('$$hashKey',None)
         saved_host = self.store['hosts'].editRecord(kwargs)
         print "WTF: saved_host:",saved_host
         host = PCHost(**saved_host)
-        self.hosts.append(host)
+        self.update_host(host)
         #pp(self.hosts)
         return host
 
