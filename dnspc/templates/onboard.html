@@ -37,7 +37,7 @@ td.label { text-align:right; }
            <td><input class='text' type="text" ng-model="myhost.mac" /></td>
            <td><input class='text' type="text" ng-model="myhost.owner" /></td>
         </tr>
-        <tr ng-repeat="host in allhosts |filter:{mac: '{{mac}}'}">
+        <tr ng-repeat="host in allhosts |filter:{mac: myhost.mac}">
            <td class='label'>saved:</td>
            <td><span>{[host.name]}</span></td>
            <td><span>{[host.ip]}</span></td>
