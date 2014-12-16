@@ -21,6 +21,12 @@ pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
         $rootScope.section = sect;
     };
     $scope.newhost = {
+        "name":"",
+        "ip":"",
+        "mac":"",
+        "owner":""
+    };
+    $scope.myhost = {
         "name":"{{hostname}}",
         "ip":"{{ip}}",
         "mac":"{{mac}}",
@@ -64,7 +70,14 @@ pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
             {method: method, url: url}
         ).success(function(data, status) {
             //gotRules(data,status);
-            $scope.myhosts = data.data;
+            $scope.allhosts = data.data;
+            for (var i=0; i<$scope.allhosts.length; i++) {
+                host = $scope.allhosts[i];
+                if (host['mac'] == '{{mac}}') {
+                    $scope.myhost = host;
+                    break;
+                }
+            }
             console.log(data.data);
         }).error(function(data, status) {
             console.log('ERROR');

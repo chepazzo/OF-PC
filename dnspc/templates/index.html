@@ -52,7 +52,7 @@ table.dow td {
        </tr>
       </table>
       <datalist id="IPs">
-        <option ng-repeat='host in myhosts' value="{[host.ip]}">{[host.name]}</option>
+        <option ng-repeat='host in allhosts' value="{[host.ip]}">{[host.name]}</option>
       </datalist>
     </div><!-- id='currrules' -->
 
@@ -99,7 +99,7 @@ table.dow td {
            <td><input class="text" type="text" ng-model="newhost.mac" /></td>
            <td><input class="text" type="text" ng-model="newhost.owner" /></td>
         </tr>
-        <tr ng-repeat='host in myhosts | orderBy:sort.column:sort.descending'>
+        <tr ng-repeat='host in allhosts | orderBy:sort.column:sort.descending'>
            <td class='del'>
             <span class='clickable' ng-click='del_host(host._uid)' >del</span>
             <span class='clickable' ng-click='edit_host(host)' >edit</span>
