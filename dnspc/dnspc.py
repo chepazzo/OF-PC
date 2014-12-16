@@ -4,6 +4,7 @@ import copy,sys
 
 ## date and time
 import time
+import datetime
 from dateutil.parser import parse as dateparse
 
 ## DNS stuff
@@ -64,9 +65,9 @@ class PCRule(DataObj):
             time_start = dateparse(self.time_start).time()
         if self.time_end not in ['','*']:
             time_end = dateparse(self.time_end).time()
-        if now <= time_start:
+        if now < time_start:
             return False
-        if time_end <= now:
+        if time_end < now:
             return False
         return True
 
