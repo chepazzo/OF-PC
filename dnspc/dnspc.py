@@ -1,13 +1,22 @@
 # coding=utf-8
-import time
 import socket
 import copy,sys
+
+## date and time
+import time
+from dateutil.parser import parse as dateparse
+
+## DNS stuff
 from dnslib import DNSRecord,RR,QTYPE,RCODE,parse_time
 from dnslib.server import DNSServer,DNSHandler,BaseResolver,DNSLogger
 from dnslib.proxy import ProxyResolver,PassthroughDNSHandler,DNSHandler
-from pprint import pprint as pp
 
+## DNSPC stuff
+import utils.misc
 from dnsconf import settings
+
+## Candy
+from pprint import pprint as pp
 
 class DataObj(object):
     def __init__(self,**kwargs):
@@ -30,9 +39,9 @@ class PCRule(DataObj):
     def __init__(self,**kwargs):
         self.src_ip = '*'
         self.dst_str = '*'
-        self.dow = '*'
-        self.time_start = '*'
-        self.time_end = '*'
+        self.dow = []
+        self.time_start = '0:00'
+        self.time_end = '11:59'
         self.action = 'block'
         self.redirect = None
         super(PCRule, self).__init__(**kwargs)
@@ -41,6 +50,23 @@ class PCRule(DataObj):
         if src_ip != self.src_ip:
             return False
         if not dst_str.matchGlob(self.dst_str):
+            return False
+        ## Does this rule apply to today?
+        if len(self.dow) > 0:
+            if utils.misc.get_dow() not in self.dow:
+                return False
+        ## It applies to today, but what about right now?
+        now = datetime.datetime.now().time()
+        time_start = dateparse('0:0').time()
+        time_end = dateparse('23:00:00').time()
+        ## Create datetime.time objects from PCRule
+        if self.time_start not in ['','*']:
+            time_start = dateparse(self.time_start).time()
+        if self.time_end not in ['','*']:
+            time_end = dateparse(self.time_end).time()
+        if now <= time_start:
+            return False
+        if time_end <= now:
             return False
         return True
 
