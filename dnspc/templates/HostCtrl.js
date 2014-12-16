@@ -1,6 +1,6 @@
 if ( typeof pcApp == "undefined" ) {
 
-    var pcApp = angular.module('pcApp', ["checklist-model"]);
+    var pcApp = angular.module('pcApp', []);
 
     pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
         $interpolateProvider.startSymbol('{[');
@@ -9,14 +9,7 @@ if ( typeof pcApp == "undefined" ) {
     pcApp.run(function($rootScope) {
         $rootScope.section = 'currrules';
     });
-
-    //pcApp.controller('RootCtrl', function ($scope,$rootScope) {
-    //    $rootScope.section = 'currhosts';
-    //});
 }
-//console.log("HostCtrl");
-//console.log(pcApp);
-//var pcApp = angular.module('pcApp', []);
 
 pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
 
