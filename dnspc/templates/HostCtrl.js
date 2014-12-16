@@ -74,7 +74,9 @@ pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
             for (var i=0; i<$scope.allhosts.length; i++) {
                 host = $scope.allhosts[i];
                 if (host['mac'] == '{{mac}}') {
-                    $scope.myhost = host;
+                    $scope.myhost._uid = host._uid;
+                    $scope.myhost.owner = host.owner;
+                    //$scope.myhost = host;
                     break;
                 }
             }

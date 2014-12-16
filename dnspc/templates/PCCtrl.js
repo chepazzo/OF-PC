@@ -96,7 +96,7 @@ pcApp.controller('PCCtrl', function ($scope,$rootScope,$http) {
             {method: method, url: url}
         ).success(function(data, status) {
             //gotRules(data,status);
-            $scope.myhosts = data.data;
+            $scope.allhosts = data.data;
             console.log(data.data);
         }).error(function(data, status) {
             console.log('ERROR');

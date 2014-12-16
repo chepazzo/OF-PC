@@ -5,6 +5,7 @@
   <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
   <style>
 #congrats { width: 300px; margin:auto; height: 40px; }
+td.label { text-align:right; }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
   <script src="HostCtrl.js"></script>
@@ -20,7 +21,7 @@
     You can make changes below.<br />
     Enjoy.
     </span></div><!-- id='congrats' -->
-    <div id='addhost' class='section'>
+    <div id='addhost'>
       <form novalidate class="simple-form">
        <table id='hosts' style='margin:auto'>
         <tr><th></th>
@@ -31,11 +32,19 @@
         </tr>
         <tr>
            <td><button ng-click="add_host(myhost)">save</button></td>
-           <td><input type="text" ng-model="myhost.name" /></td>
-           <td><input type="text" ng-model="myhost.ip" /></td>
-           <td><input type="text" ng-model="myhost.mac" /></td>
-           <td><input type="text" ng-model="myhost.owner" /></td>
+           <td><input class='text' type="text" ng-model="myhost.name" /></td>
+           <td><input class='text' type="text" ng-model="myhost.ip" /></td>
+           <td><input class='text' type="text" ng-model="myhost.mac" /></td>
+           <td><input class='text' type="text" ng-model="myhost.owner" /></td>
         </tr>
+        <tr ng-repeat="host in allhosts |filter:{mac: '{{mac}}'}">
+           <td class='label'>saved:</td>
+           <td><span>{[host.name]}</span></td>
+           <td><span>{[host.ip]}</span></td>
+           <td><span>{[host.mac]}</span></td>
+           <td><span>{[host.owner]}</span></td>
+        </tr>
+       </table>
        </table>
       </form>
     </div><!-- id='addhost' -->

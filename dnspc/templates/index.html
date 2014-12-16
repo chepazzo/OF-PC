@@ -4,15 +4,6 @@
   <title>Parental Controls</title>
   <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='parentalcontrols.css')}}" />
   <style>
-.section { border:solid thin black; width:500px; height:220px;}
-#addrule td.label { text-align: right; font-weight:bold; }
-.active { color:red; }
-input.text { width:99px; height:15px; border:solid 1px gray; padding: 1px; }
-input.text { font-size:13px; }
-button { font-size:13px; }
-table.dow td {
-    text-align:center;
-}
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
   <script src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
@@ -25,7 +16,7 @@ table.dow td {
   </div><!-- id='head' -->
   <div id='body'>
    <div id=PCCtrl ng-controller="PCCtrl">
-<ol>
+<ol id='navbar'>
 <li class='clickable' ng-click="setsection('currrules');" ng-class="{'active':issection('currrules')}">Rules</li>
 <li class='clickable' ng-click="setsection('currhosts');" ng-class="{'active':issection('currhosts')}">Hosts</li>
 <li class='clickable' ng-click="setsection('addrule');" ng-class="{'active':issection('addrule')}">Add Rule</li>
@@ -51,15 +42,12 @@ table.dow td {
           <td class='act'><span class='{[rule.action]}'>{[rule.action]}</span></td>
        </tr>
       </table>
-      <datalist id="IPs">
-        <option ng-repeat='host in allhosts' value="{[host.ip]}">{[host.name]}</option>
-      </datalist>
     </div><!-- id='currrules' -->
 
     <div id='addrule' class='section' ng-show="issection('addrule')">
      <form novalidate class="simple-form">
       <button ng-click="add_rule(newrule); setsection('currrules');">save</button>
-      <table id='addrule' style='margin:auto'>
+      <table id='rule' style='margin:auto'>
        <tr><td class='label'>Src IP:</td><td><input class="text form-control" list="IPs" type="text" ng-model="newrule.src_ip" /></td></tr>
        <tr><td class='label'>Dst Str:</td><td><input class="text" type="text" ng-model="newrule.dst_str" ng-click="lognewrule(newrule)"/></td></tr>
        <tr><td class='label'>When:</td>
@@ -82,6 +70,9 @@ table.dow td {
     </div><!-- id='addrule' -->
    </div><!-- id='PCCtrl' -->
    <div id='HostCtrl' ng-controller="HostCtrl">
+    <datalist id="IPs">
+      <option ng-repeat='host in allhosts' value="{[host.ip]}">{[host.name]}</option>
+    </datalist>
     <div id='currhosts' class='section' ng-show="issection('currhosts')">
       <div><span class='clickable' ng-click='console.log("get_hosts"); get_hosts()'>Reload Hosts</span></div>
       <form novalidate class="simple-form">

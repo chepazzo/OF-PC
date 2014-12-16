@@ -26,12 +26,25 @@
  }
  div.section {
     margin: 5px auto auto;
+    border:solid thin black;
+    width:500px;
+    height:220px;
  }
 
 tr.head {
     text-align:center;
     font-weight:bold;
 }
+
+input.text { width:99px; height:15px; border:solid 1px gray; padding: 1px; }
+input.text { font-size:13px; }
+button { font-size:13px; }
+
+#navbar .active { color:red; }
+#navbar { width:500px; margin:auto;}
+
+/* Add Rule */
+#addrule table.rule td.label { text-align: right; font-weight:bold; }
 
 /* Rules */
 #currrules table#rules td.src {
@@ -43,3 +56,5 @@ tr.head {
 #currrules table#rules td.act span.allow {
     color: green;
 }
+
+
