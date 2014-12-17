@@ -1,16 +1,3 @@
-if ( typeof pcApp == "undefined" ) {
-
-    var pcApp = angular.module('pcApp', []);
-
-    pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
-        $interpolateProvider.startSymbol('{[');
-        $interpolateProvider.endSymbol(']}');
-      }]);
-    pcApp.run(function($rootScope) {
-        $rootScope.section = 'currrules';
-    });
-}
-
 pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
 
     $scope.issection = function(sect) {

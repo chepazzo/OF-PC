@@ -30,17 +30,30 @@ def index():
 def addrulehtml():
     return render_template('addrule.html')
 
-@app.route('/PCCtrl.js')
-def pcctrljs():
-    return render_template('PCCtrl.js')
-
-@app.route('/HostCtrl.js')
-def hostctrljs():
+@app.route('/pcapp.js')
+def pcappjs():
     ip = request.remote_addr
     mac = net.get_mac_addr(ip)
     hostname = net.get_hostname(ip)
-    return render_template('HostCtrl.js',
+    main = render_template('pcapp.js')
+    rules = render_template('RuleCtrl.js')
+    hosts = render_template('HostCtrl.js',
         ip=ip,mac=mac,hostname=hostname)
+    check = render_template('checklist-model.js')
+    return main+rules+hosts+check
+
+#@app.route('/PCCtrl.js')
+#def pcctrljs():
+#    return render_template('PCCtrl.js')
+
+#@app.route('/HostCtrl.js')
+#def hostctrljs():
+#    ip = request.remote_addr
+#    mac = net.get_mac_addr(ip)
+#    hostname = net.get_hostname(ip)
+#    temp = render_template('HostCtrl.js',
+#        ip=ip,mac=mac,hostname=hostname)
+#    return temp
 
 @app.route('/onboard')
 def onboard():

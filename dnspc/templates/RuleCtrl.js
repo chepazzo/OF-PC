@@ -1,17 +1,5 @@
-if ( typeof pcApp == "undefined" ) {
 
-    var pcApp = angular.module('pcApp', ['checklist-model']);
-
-    pcApp.config(['$interpolateProvider', function ($interpolateProvider) {
-        $interpolateProvider.startSymbol('{[');
-        $interpolateProvider.endSymbol(']}');
-      }]);
-    pcApp.run(function($rootScope) {
-        $rootScope.section = 'currrules';
-    });
-}
-
-pcApp.controller('PCCtrl', function ($scope,$rootScope,$http) {
+pcApp.controller('RuleCtrl', function ($scope,$rootScope,$http) {
 
     $scope.issection = function(sect) {
         if ($rootScope.section == sect) { return true; }

@@ -6,16 +6,14 @@
   <style>
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
-  <script src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
-  <script src="PCCtrl.js"></script>
-  <script src="HostCtrl.js"></script>
+  <script src="pcapp.js"></script>
  </head>
  <body>
   <div id='head'>
    <div id='title'>Parental Controls</div>
   </div><!-- id='head' -->
   <div id='body'>
-   <div id=PCCtrl ng-controller="PCCtrl">
+   <div id=RuleCtrl ng-controller="RuleCtrl">
 <ol id='navbar'>
 <li class='clickable' ng-click="setsection('currrules');" ng-class="{'active':issection('currrules')}">Rules</li>
 <li class='clickable' ng-click="setsection('currhosts');" ng-class="{'active':issection('currhosts')}">Hosts</li>
@@ -68,7 +66,7 @@
       </table>
      </form>
     </div><!-- id='addrule' -->
-   </div><!-- id='PCCtrl' -->
+   </div><!-- id='RuleCtrl' -->
    <div id='HostCtrl' ng-controller="HostCtrl">
     <datalist id="IPs">
       <option ng-repeat='host in allhosts' value="{[host.ip]}">{[host.name]}</option>
