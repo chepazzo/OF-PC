@@ -6,7 +6,7 @@ It was originally developed as an OpenFlow app, but
 was reengineered to be a dns server due to performance issues.
 '''
 
-__version__ = '1.1'
+__version__ = '1.2'
 __author__ = 'Mike Biacaniello'
 __maintainer__ = 'Mike Biacaniello'
 __email__ = 'chepazzo@gmail.com'
