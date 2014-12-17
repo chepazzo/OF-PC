@@ -88,7 +88,7 @@
            <td><input class="text" type="text" ng-model="newhost.mac" /></td>
            <td><input class="text" type="text" ng-model="newhost.owner" /></td>
         </tr>
-        <tr ng-repeat='host in allhosts | orderBy:sort.column:sort.descending'>
+        <tr ng-repeat='host in allhosts | orderBy:sort.column:sort.descending' ng-class="{'active':host._uid == newhost._uid}">
            <td class='del'>
             <span class='clickable' ng-click='del_host(host._uid)' >del</span>
             <span class='clickable' ng-click='edit_host(host)' >edit</span>

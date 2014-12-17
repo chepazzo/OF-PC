@@ -29,6 +29,7 @@ pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
             {method: method, url: url,data: JSON.stringify(data)}
         ).success(function(data, status) {
             $scope.get_hosts();
+            $scope.resetnewhost();
         }).error(function(data, status) {
             console.log('ERROR');
             console.log(data);
@@ -73,6 +74,14 @@ pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
             console.log(data);
             console.log(status);
         });
+    };
+    $scope.resetnewhost = function() {
+        $scope.newhost = {
+            "name":"",
+            "ip":"",
+            "mac":"",
+            "owner":""
+        };
     };
 
     $scope.sort = { 'column':'name','descending': false };

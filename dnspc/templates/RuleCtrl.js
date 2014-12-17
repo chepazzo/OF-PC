@@ -41,6 +41,7 @@ pcApp.controller('RuleCtrl', function ($scope,$rootScope,$http) {
             {method: method, url: url,data: JSON.stringify(data)}
         ).success(function(data, status) {
             $scope.get_rules();
+            $scope.resetnewrule();
         }).error(function(data, status) {
             console.log('ERROR');
             console.log(data);
@@ -104,6 +105,18 @@ pcApp.controller('RuleCtrl', function ($scope,$rootScope,$http) {
             newdow.push(a[d]);
         }
         return newdow.join(',');
+    };
+
+    $scope.resetnewrule = function() {
+        $scope.newrule = {
+            'src_ip':'',
+            'dst_str':'*',
+            'dow':[],
+            'time_start':'',
+            'time_end':'',
+            'redirect':'',
+            'action':'block'
+        };
     };
 
     $scope.sort = { 'column':'src_name','descending': false };
