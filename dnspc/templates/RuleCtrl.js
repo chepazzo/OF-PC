@@ -34,8 +34,8 @@ pcApp.controller('RuleCtrl', function ($scope,$rootScope,$http) {
         console.log($scope.newrule);
     };
 
-    $scope.add_rule = function(data) {
-        var url = '{{url_for('addrule')}}';
+    $scope.save_rule = function(data) {
+        var url = '{{url_for('saverule')}}';
         var method = 'POST';
         $http(
             {method: method, url: url,data: JSON.stringify(data)}

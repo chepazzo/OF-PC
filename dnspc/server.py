@@ -1,7 +1,7 @@
 #/usr/bin/env python
 
-## Add rule to ruleset via POST to /addrule:
-## curl -i -H "Content-Type: application/json" -X POST -d '{"mac":"192.168.0.134","dow":"0,1,2,3,4","time_start":"18:00","time_end:"23:59","domain":"youtube.com","action":"block"}' http://localhost:5000/addrule
+## Add or save rule to ruleset via POST to /saverule:
+## curl -i -H "Content-Type: application/json" -X POST -d '{"mac":"192.168.0.134","dow":"0,1,2,3,4","time_start":"18:00","time_end:"23:59","domain":"youtube.com","action":"block"}' http://localhost:5000/saverule
 
 from flask import Flask, render_template, request
 app = Flask(__name__)
@@ -26,9 +26,10 @@ def top():
 def index():
     return render_template('index.html')
 
-@app.route('/addrule.html')
-def addrulehtml():
-    return render_template('addrule.html')
+@app.route('/onboard')
+def onboard():
+    '''/onboard is a page to allow a user to set a hostname, etc for a given device'''
+    return render_template('onboard.html')
 
 @app.route('/pcapp.js')
 def pcappjs():
@@ -55,21 +56,11 @@ def pcappjs():
 #        ip=ip,mac=mac,hostname=hostname)
 #    return temp
 
-@app.route('/onboard')
-def onboard():
-    '''/onboard is a page to allow a user to set a hostname, etc for a given device'''
-    #ip = request.remote_addr
-    #mac = net.get_mac_addr(ip)
-    #hostname = net.get_hostname(ip)
-    #return render_template('onboard.html',
-    #    ip=ip,mac=mac,hostname=hostname)
-    return render_template('onboard.html')
-
 ## API
 
-@app.route('/addrule', methods = ['POST'])
-def addrule():
-    rule = PC.add_rule(**request.json)
+@app.route('/saverule', methods = ['POST'])
+def saverule():
+    rule = PC.save_rule(**request.json)
     return jsonify(succ(value=rule._serialize()))
 
 @app.route('/delrule', methods = ['POST'])
@@ -89,9 +80,9 @@ def get_rules():
     retval = [s._serialize() for s in PC.rules]
     return jsonify(succ(value=retval))
 
-@app.route('/addhost', methods = ['POST'])
-def addhost():
-    host = PC.add_host(**request.json)
+@app.route('/savehost', methods = ['POST'])
+def savehost():
+    host = PC.save_host(**request.json)
     return jsonify(succ(value=host._serialize()))
 
 @app.route('/delhost', methods = ['POST'])

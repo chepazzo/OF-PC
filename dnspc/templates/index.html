@@ -44,7 +44,7 @@
 
     <div id='addrule' class='section' ng-show="issection('addrule')">
      <form novalidate class="simple-form">
-      <button ng-click="add_rule(newrule); setsection('currrules');">save</button>
+      <button ng-click="save_rule(newrule); setsection('currrules');">save</button>
       <table id='rule' style='margin:auto'>
        <tr><td class='label'>Src IP:</td><td><input class="text form-control" list="IPs" type="text" ng-model="newrule.src_ip" /></td></tr>
        <tr><td class='label'>Dst Str:</td><td><input class="text" type="text" ng-model="newrule.dst_str" ng-click="lognewrule(newrule)"/></td></tr>
@@ -82,7 +82,7 @@
            <th ng:click="changeSorting('owner')">Owner</th>
         </tr>
         <tr class='addnew'>
-           <td><button ng-click="add_host(newhost)">save</button></td>
+           <td><button ng-click="save_host(newhost)">save</button></td>
            <td><input class="text" type="text" ng-model="newhost.name" /></td>
            <td><input class="text" type="text" ng-model="newhost.ip" /></td>
            <td><input class="text" type="text" ng-model="newhost.mac" /></td>

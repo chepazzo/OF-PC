@@ -22,8 +22,8 @@ pcApp.controller('HostCtrl', function ($scope,$rootScope,$http) {
     $scope.edit_host = function(host) {
         $scope.newhost = host;
     };
-    $scope.add_host = function(data) {
-        var url = '{{url_for('addhost')}}';
+    $scope.save_host = function(data) {
+        var url = '{{url_for('savehost')}}';
         var method = 'POST';
         $http(
             {method: method, url: url,data: JSON.stringify(data)}
