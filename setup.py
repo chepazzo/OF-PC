@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+import sys
+## Without this, Flask complains that the .egg file
+## is not a directory.
+sys.argv.append('--old-and-unmanageable')
+
 from setuptools import setup, find_packages
 
 # Get version from pkg index
@@ -17,7 +22,7 @@ long_desc = __doc__
 
 requires = [
     'Flask',
-    'dateutil',
+    "python-dateutil",
     'dnslib',
     'oslo.config',
     'IPy',
@@ -30,16 +35,19 @@ setup(name=__packagename__,
     author=__author__,
     author_email=__email__,
     url=__url__,
-    packages=['dnspc'],
-    requires=requires,
+    packages=find_packages(),
+    #packages=['dnspc'],
+    py_modules=['runserver'],
+    install_requires=requires,
+    include_package_data=True,
     data_files=[
-        #('/etc', ['config/dnspc.conf']),
-        #('/etc/init', ['install/dnspc.conf']),
-        #('/var/lib/dnspc', ['config/rules.json','config/hosts.json'])
+        ('/etc', ['config/dnspc.conf']),
+        ('/etc/init', ['install/dnspc.conf']),
+        ('/var/lib/dnspc', ['config/rules.json','config/hosts.json'])
     ],
     entry_points={
         'console_scripts': {
-            'startdnspc = runserver:main'
+            'start_dnspc = runserver:main'
         }
     },
 )

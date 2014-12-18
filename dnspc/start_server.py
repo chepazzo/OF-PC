@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 import sys
 import argparse
-from dnspc import dnsconf
+#from dnspc import dnsconf
+import dnsconf
 
 def main():
 
+    ## Need to load settings before loading other modules
     parser = argparse.ArgumentParser()
     parser.add_argument("-i",default='/etc/dnspc.conf',help="Specify config file")
     parser.add_argument('--debug', action='store_true', default=False,help="Enable debug mode")
@@ -12,8 +14,10 @@ def main():
 
     settings = dnsconf.settings
     settings.load(args.i)
-    from dnspc import server
-    from dnspc import dnspc
+    #from dnspc import server
+    #from dnspc import dnspc
+    import server
+    import dnspc
 
     debug = settings.WEB['DEBUG']
 

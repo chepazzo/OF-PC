@@ -1,0 +1,2 @@
+recursive-include dnspc/templates *
+recursive-include dnspc/static *
