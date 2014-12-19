@@ -3,7 +3,7 @@
 import sys
 ## Without this, Flask complains that the .egg file
 ## is not a directory.
-sys.argv.append('--old-and-unmanageable')
+#sys.argv.append('--old-and-unmanageable')
 
 from setuptools import setup, find_packages
 
@@ -21,6 +21,7 @@ desc = __shortdesc__
 long_desc = __doc__
 
 requires = [
+    'six>=1.7.0',
     'Flask',
     "python-dateutil",
     'dnslib',
