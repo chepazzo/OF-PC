@@ -36,8 +36,6 @@ setup(name=__packagename__,
     author_email=__email__,
     url=__url__,
     packages=find_packages(),
-    #packages=['dnspc'],
-    py_modules=['runserver'],
     install_requires=requires,
     include_package_data=True,
     data_files=[
@@ -47,7 +45,7 @@ setup(name=__packagename__,
     ],
     entry_points={
         'console_scripts': {
-            'start_dnspc = runserver:main'
+            'start_dnspc = dnspc.start_server:main'
         }
     },
 )
