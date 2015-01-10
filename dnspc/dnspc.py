@@ -276,17 +276,19 @@ class ParentalControls(BaseResolver):
         # Try to resolve locally unless on skip list
         rules = self.get_matching_rules(client_ip,qname)
         if any(rules):
-            print "Matched Rules:",[ r.__dict__ for r in rules ]
-            ## right now returning nothing
-            ## need to change to return based on rule match
-            ## (block, redirect, etc)
+            ## Collecting info on match for logging
+            match_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            match_name = client_ip
+            match_hosts = [h.name for h in self.hosts if h.ip == client_ip]
+            if any(match_hosts):
+                match_name = ",".join(match_hosts)
             for rule in rules:
                 if rule.action == 'redirect':
-                    print "Redirecting",qname,"to:",rule.redirect
+                    print "[{}] REDIRECT {}-->{} to {}".format(match_time,match_name,qname,rule.redirect)
                     redir = rule.redirect
                     reply.add_answer(*RR.fromZone("{} IN A {}".format(qname,redir)))
                 if rule.action == 'block':
-                    print "Blocking",qname
+                    print "[{}] BLOCKED {}({})-->{}".format(match_time,match_name,client_ip,qname)
                     return reply
         else:
             ## If no match, then proxy the request to IP_UP
