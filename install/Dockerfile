@@ -8,8 +8,6 @@ FROM ubuntu:14.04
 
 MAINTAINER Mike Biancaniello
 
-WORKDIR /app
-
 RUN apt-get update && apt-get install -y git python-pip openssh-server
 RUN pip install git+https://github.com/chepazzo/dnspc.git
 
@@ -18,9 +16,16 @@ RUN echo "dnspc ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/dnspc && \
 
 RUN adduser --system --no-create-home --disabled-password --disabled-login --group dnspc
 
-USER dnspc
+RUN mkdir -p /var/lib/dnspc
+RUN chown dnspc:dnspc /var/lib/dnspc -R
+
+#USER dnspc
 
 EXPOSE 5000
 EXPOSE 53/tcp
 EXPOSE 53/udp
+## I want this to run as dnspc, but this CMD line runs it as root.
+## TODO: Fix this.
+## I thought about just invoking an init.d script, but not sure if that's Docker-ish.
+#CMD ["su","dnspc","-c /usr/local/bin/start_dnspc"]
 CMD ["sudo","/usr/local/bin/start_dnspc"]

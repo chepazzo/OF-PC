@@ -1,0 +1,3 @@
+{"redirect": null, "time_start": "", "time_end": "", "dst_str": "*.yahoo.com", "src_ip": "172.17.42.1", "_uid": "2015015000", "action": "block", "dow": []}
+{"redirect": null, "time_start": "", "time_end": "", "dst_str": "*", "src_ip": "172.17.42.1", "_uid": "2015015000", "action": "block", "dow": []}
+{"redirect": null, "time_start": "00:00", "time_end": "23:59", "dst_str": "*.netflix.com", "src_ip": "192.168.201.129", "action": "block", "_uid": "2014492004", "src_name": "kid chromebook", "dow": [1, 2, 3, 4]}

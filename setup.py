@@ -42,7 +42,7 @@ setup(name=__packagename__,
     data_files=[
         ('/etc', ['config/dnspc.conf']),
         ('/etc/init', ['install/dnspc.conf']),
-        ('/var/lib/dnspc', ['config/rules.json','config/hosts.json'])
+        ('/var/lib/dnspc', ['config/rules.example.json','config/hosts.example.json','config/README.md'])
     ],
     entry_points={
         'console_scripts': {
