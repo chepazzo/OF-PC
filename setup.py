@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
-import sys
+#import sys
 ## Without this, Flask complains that the .egg file
 ## is not a directory.
 #sys.argv.append('--old-and-unmanageable')
+
+import os
 
 from setuptools import setup, find_packages
 
@@ -29,6 +31,23 @@ requires = [
     'IPy',
 ]
 
+data_files=[
+    ('/etc', ['config/dnspc.example.conf']),
+    ('/var/lib/dnspc', ['config/rules.example.json','config/hosts.example.json','config/README.md']),
+]
+
+whichinit = os.popen('install/whichinit.sh').read().strip()
+
+if whichinit:
+    if whichinit == 'upstart':
+        initfiles = ('/etc/init', ['install/dnspc.conf'])
+    elif whichinit == 'lsb':
+        initfiles = ('/etc/init.d', ['install/dnspc'])
+    ## dnspc doesn't actually support systemd
+    #elif whichinit == 'systemd':
+    #    initfiles = ('/usr/lib/systemd/system', ['install/dnspc.system'])
+    data_files.append(initfiles)
+
 setup(name=__packagename__,
     version=__version__,
     description=desc,
@@ -39,11 +58,7 @@ setup(name=__packagename__,
     packages=find_packages(),
     install_requires=requires,
     include_package_data=True,
-    data_files=[
-        ('/etc', ['config/dnspc.conf']),
-        ('/etc/init', ['install/dnspc.conf']),
-        ('/var/lib/dnspc', ['config/rules.example.json','config/hosts.example.json','config/README.md'])
-    ],
+    data_files=data_files,
     entry_points={
         'console_scripts': {
             'start_dnspc = dnspc.start_server:main'

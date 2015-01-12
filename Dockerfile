@@ -19,13 +19,11 @@ RUN adduser --system --no-create-home --disabled-password --disabled-login --gro
 RUN mkdir -p /var/lib/dnspc
 RUN chown dnspc:dnspc /var/lib/dnspc -R
 
-#USER dnspc
 
 EXPOSE 5000
 EXPOSE 53/tcp
 EXPOSE 53/udp
-## I want this to run as dnspc, but this CMD line runs it as root.
-## TODO: Fix this.
-## I thought about just invoking an init.d script, but not sure if that's Docker-ish.
-#CMD ["su","dnspc","-c /usr/local/bin/start_dnspc"]
+
+## TODO: eventually, I want this to run as dnspc
+#USER dnspc
 CMD ["sudo","/usr/local/bin/start_dnspc"]
