@@ -37,4 +37,4 @@ init_is_systemd() {
 }
 
 main
-exit 0
+exit 1
