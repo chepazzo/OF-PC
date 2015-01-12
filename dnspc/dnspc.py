@@ -287,16 +287,18 @@ class ParentalControls(BaseResolver):
                     print "[{}] REDIRECT {}-->{} to {}".format(match_time,match_name,qname,rule.redirect)
                     redir = rule.redirect
                     reply.add_answer(*RR.fromZone("{} IN A {}".format(qname,redir)))
+                    return reply
                 if rule.action == 'block':
                     print "[{}] BLOCKED {}({})-->{}".format(match_time,match_name,client_ip,qname)
                     return reply
+                if rule.action == 'allow':
+                    print "[{}] ALLOWED {}({})-->{}".format(match_time,match_name,client_ip,qname)
+        ## If no match or action == 'allow', then proxy the request to IP_UP
+        if handler.protocol == 'udp':
+            proxy_r = request.send(self.UP_IP,self.UP_PORT)
         else:
-            ## If no match, then proxy the request to IP_UP
-            if handler.protocol == 'udp':
-                proxy_r = request.send(self.UP_IP,self.UP_PORT)
-            else:
-                proxy_r = request.send(self.UP_IP,self.UP_PORT,tcp=True)
-            reply = DNSRecord.parse(proxy_r)
+            proxy_r = request.send(self.UP_IP,self.UP_PORT,tcp=True)
+        reply = DNSRecord.parse(proxy_r)
         return reply
 
 def get_name_from_ip(ip):
