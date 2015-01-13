@@ -1,0 +1,23 @@
+## systemd .service file 
+## Use for installing on archlinux as a service
+##
+## Install as:
+## /usr/lib/systemd/system/dnspc.service
+##
+## Activate with:
+## ln -s /usr/lib/systemd/system/dnspc.service /etc/systemd/system/multi-user.wants/
+##
+
+[Unit]
+Description=DNSPC Daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/start_dnspc
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

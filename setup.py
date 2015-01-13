@@ -43,9 +43,8 @@ if whichinit:
         initfiles = ('/etc/init', ['install/dnspc.conf'])
     elif whichinit == 'lsb':
         initfiles = ('/etc/init.d', ['install/dnspc'])
-    ## dnspc doesn't actually support systemd
-    #elif whichinit == 'systemd':
-    #    initfiles = ('/usr/lib/systemd/system', ['install/dnspc.system'])
+    elif whichinit == 'systemd':
+        initfiles = ('/usr/lib/systemd/system', ['install/dnspc.system'])
     data_files.append(initfiles)
 
 setup(name=__packagename__,
