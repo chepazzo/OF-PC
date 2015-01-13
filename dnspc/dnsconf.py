@@ -15,7 +15,14 @@ class Conf(object):
         self.parser = ConfigParser.ConfigParser()
     def load(self,conffile=CONFFILE):
         print "WTF: dnsconf.load({})".format(conffile)
-        self.parser.read(conffile)
+        try:
+            self.parser.read(conffile)
+        except: 
+            print "** Conf File ({}) invalid **".format(conffile)
+            exit()
+        if len(self.parser.sections()) < 1:
+            print "** Conf File ({}) missing or invalid **".format(conffile)
+            exit()
         for sectname in self.parser.sections():
             section = {}
             setattr(self,sectname,section)
