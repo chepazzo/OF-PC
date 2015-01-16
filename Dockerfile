@@ -8,16 +8,33 @@ FROM ubuntu:14.04
 
 MAINTAINER Mike Biancaniello
 
-RUN apt-get update && apt-get install -y git python-pip openssh-server
-RUN pip install git+https://github.com/chepazzo/dnspc.git
+## Base package installs
+RUN apt-get update && apt-get install -y git python-pip
+RUN mkdir -p /var/lib/dnspc/
+COPY requirements.txt /tmp/
+RUN pip install -r /tmp/requirements.txt
 
-RUN echo "dnspc ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/dnspc && \
-    chmod 0440 /etc/sudoers.d/dnspc
+## Base package src
+COPY dnspc /src/dnspc/
 
-RUN adduser --system --no-create-home --disabled-password --disabled-login --group dnspc
+## Create startup script
+#RUN mkdir -p /usr/local/bin && ln -sf /src/dnspc/start_server.py /usr/local/bin/start_dnspc
 
-RUN mkdir -p /var/lib/dnspc
-RUN chown dnspc:dnspc /var/lib/dnspc -R
+## Package config file
+COPY config/dnspc.example.conf /etc/dnspc.conf
+
+## LSB init script
+COPY install/dnspc /etc/init.d/
+
+#RUN pip install git+https://github.com/chepazzo/dnspc.git
+
+#RUN echo "dnspc ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/dnspc && \
+#    chmod 0440 /etc/sudoers.d/dnspc
+#
+#RUN adduser --system --no-create-home --disabled-password --disabled-login --group dnspc
+#
+#RUN mkdir -p /var/lib/dnspc
+#RUN chown dnspc:dnspc /var/lib/dnspc -R
 
 
 EXPOSE 5000
@@ -26,4 +43,6 @@ EXPOSE 53/udp
 
 ## TODO: eventually, I want this to run as dnspc
 #USER dnspc
-CMD ["sudo","/usr/local/bin/start_dnspc"]
+#CMD ["/usr/local/bin/start_dnspc"]
+CMD ["/src/dnspc/start_server.py"]# >> /var/log/dnspc.log
+#CMD ["/etc/init.d/dnspc","start"]
