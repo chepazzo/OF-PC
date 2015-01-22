@@ -1,3 +1,7 @@
+install/preinst DEBIAN/
+install/postinst DEBIAN/
+install/prerm DEBIAN/
+install/postrm DEBIAN/
 config tmp/dnspc/
 dnspc tmp/dnspc/
 install tmp/dnspc/

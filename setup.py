@@ -36,16 +36,16 @@ data_files=[
     ('/var/lib/dnspc', ['config/rules.example.json','config/hosts.example.json','config/README.md']),
 ]
 
-whichinit = os.popen('install/whichinit.sh').read().strip()
-
-if whichinit:
-    if whichinit == 'upstart':
-        initfiles = ('/etc/init', ['install/dnspc.conf'])
-    elif whichinit == 'lsb':
-        initfiles = ('/etc/init.d', ['install/dnspc'])
-    elif whichinit == 'systemd':
-        initfiles = ('/usr/lib/systemd/system', ['install/dnspc.system'])
-    data_files.append(initfiles)
+#whichinit = os.popen('install/whichinit.sh').read().strip()
+#
+#if whichinit:
+#    if whichinit == 'upstart':
+#        initfiles = ('/etc/init', ['install/dnspc.conf'])
+#    elif whichinit == 'lsb':
+#        initfiles = ('/etc/init.d', ['install/dnspc'])
+#    elif whichinit == 'systemd':
+#        initfiles = ('/usr/lib/systemd/system', ['install/dnspc.system'])
+#    data_files.append(initfiles)
 
 setup(name=__packagename__,
     version=__version__,
