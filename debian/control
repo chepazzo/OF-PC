@@ -1,0 +1,20 @@
+Source: dnspc
+Section: MISHAP
+Priority: optional
+Maintainer: Mike Biancaniello <chepazzo@gmail.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+Homepage: https://github.com/chepazzo/dnspc
+#Vcs-Git: git://git.debian.org/collab-maint/dnspc.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/dnspc.git;a=summary
+
+Package: dnspc
+Architecture: all
+Depends: ${misc:Depends}, python (>=2.7)
+Description: Parental Controls application for time- and machine- based controls.
+ dnspc is a granular Parental Controls app.
+ It allows a parent to control access to specific sites
+ from specific machines at specific times. 
+ It was originally developed as an OpenFlow app, but 
+ was reengineered to be a dns server due to performance issues.
+
