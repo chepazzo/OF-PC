@@ -10,7 +10,7 @@ Homepage: https://github.com/chepazzo/dnspc
 
 Package: dnspc
 Architecture: all
-Depends: ${misc:Depends}, python (>=2.7)
+Depends: ${misc:Depends}, python (>=2.7), python-setuptools
 Description: Parental Controls application for time- and machine- based controls.
  dnspc is a granular Parental Controls app.
  It allows a parent to control access to specific sites

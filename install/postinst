@@ -1,18 +1,33 @@
 #!/bin/bash
 
 INSTDIR=/tmp/dnspc
-INSTDIR=.
+#INSTDIR=.
+
+cd $INSTDIR
+
+IAMDEB=1 /usr/bin/env python setup.py install
+
+if [ ! -f /etc/dnspc.conf ]; then
+    cp $INSTDIR/config/dnspc.example.conf /etc/dnspc.conf
+fi
 
 WHICHINIT=$($INSTDIR/install/whichinit.sh)
 
-if $WHICHINIT='upstart'; then
+case $WHICHINIT in 
+upstart)
     cp $INSTDIR/install/dnspc.conf /etc/init/
     service dnspc start
-elif $WHICHINIT='lsb'; then
+    ;;
+lsb)
     cp $INSTDIR/install/dnspc /etc/init.d/
     /etc/init.d/dnspc start
-elif $WHICHINIT='systemd'; then
+    ;;
+systemd)
     cp $INSTDIR/install/dnspc.service /usr/lib/systemd/system/
     ln -fs /usr/lib/systemd/system/dnspc.service /etc/systemd/system/multi-user.wants/
     systemctl start dnspc
-fi
+    ;;
+*)
+    echo "Not sure what to do with $WHICHINIT"
+    exit 1
+esac

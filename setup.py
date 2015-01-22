@@ -36,16 +36,22 @@ data_files=[
     ('/var/lib/dnspc', ['config/rules.example.json','config/hosts.example.json','config/README.md']),
 ]
 
-#whichinit = os.popen('install/whichinit.sh').read().strip()
-#
-#if whichinit:
-#    if whichinit == 'upstart':
-#        initfiles = ('/etc/init', ['install/dnspc.conf'])
-#    elif whichinit == 'lsb':
-#        initfiles = ('/etc/init.d', ['install/dnspc'])
-#    elif whichinit == 'systemd':
-#        initfiles = ('/usr/lib/systemd/system', ['install/dnspc.system'])
-#    data_files.append(initfiles)
+## the Debian postinst will add this env var
+## And will install these files anyway.
+
+IAMDEB = os.environ.get('IAMDEB',None)
+if IAMDEB is not None:
+    whichinit = os.popen('install/whichinit.sh').read().strip()
+    
+    if whichinit:
+        print "Installing files for {}".format(whichinit)
+        if whichinit == 'upstart':
+            initfiles = ('/etc/init', ['install/dnspc.conf'])
+        elif whichinit == 'lsb':
+            initfiles = ('/etc/init.d', ['install/dnspc'])
+        elif whichinit == 'systemd':
+            initfiles = ('/usr/lib/systemd/system', ['install/dnspc.system'])
+        data_files.append(initfiles)
 
 setup(name=__packagename__,
     version=__version__,
