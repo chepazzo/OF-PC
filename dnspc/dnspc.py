@@ -52,6 +52,8 @@ class PCRule(DataObj):
             return False
         if not dst_str.matchGlob(self.dst_str):
             return False
+        return self.is_now()
+    def is_now(self):
         ## Does this rule apply to today?
         if len(self.dow) > 0:
             if utils.misc.get_dow() not in self.dow:
