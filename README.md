@@ -30,3 +30,20 @@ If you direct any device to /onboard, the app will grab your IP address, MAC add
 For the first iteration of this, you can just set the name-server or dns-server options on your DHCP server to the IP of the server where this app is installed.
 
 Eventually, I will add a pyDHCP server to this so you can simply shut off your existing one.  The dnspc app might also snoop dhcp packets on the network to learn what is on the network to simplify rule creation.
+
+ToDo
+====
+1. Replace prints with real debug logging.
+2. Set up activity logs.
+    * Log more than just matched rules.
+    * alt: still only log matched rules, but 
+      require creating a rule to "allow" the domain "*"
+      so that every query gets logged.
+3. Create reports based on query logs.
+4. Add functionality to allow user to group a list of domains in a single rule
+    * e.g. { "name":"youtube","domains":["\*.youtube.com","\*.googlevideo.com"] }
+5. Improve performance
+6. Respond with user-defined data for matches to onboarded hosts/IPs.
+7. Allow re-ordering of rules.
+8. Better handling of behavior if multiple rules match.
+
