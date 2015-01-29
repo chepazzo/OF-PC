@@ -16,10 +16,17 @@ main() {
 }
 
 init_is_lsb() {
-    if test -f /lib/lsb/init-functions; then
-        return 1
+    if [ -f /lib/lsb/init-functions ]; then
+        return 0
     fi
-    return 0
+    return 1
+}
+
+init_is_systemd() {
+    if [ -x /usr/sbin/systemctl ]; then
+        return 0
+    fi
+    return 1
 }
 
 init_is_upstart() {
@@ -29,12 +36,5 @@ init_is_upstart() {
    return 1
 }
 
-init_is_systemd() {
-    if [ -x /usr/sbin/systemctl ]; then
-        return 1
-    fi
-    return 0
-}
-
 main
-exit 0
+exit 1
