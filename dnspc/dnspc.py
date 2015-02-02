@@ -1,4 +1,6 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
+
+import logging
 import socket
 import copy,sys
 
@@ -19,9 +21,13 @@ from dnsconf import settings
 ## Candy
 from pprint import pprint as pp
 
+log = logging.getLogger('dnspc.dnspc')
+monitor = logging.getLogger('monitor')
+
 class DataObj(object):
     def __init__(self,**kwargs):
         self._uid = None
+        self.log = logging.getLogger('dnspc.dnspc.DataObj')
         for k in kwargs:
             setattr(self,k,kwargs[k])
     def _serialize(self,fields=None,skip=None):
@@ -38,6 +44,7 @@ class DataObj(object):
 
 class PCRule(DataObj):
     def __init__(self,**kwargs):
+        self.log = logging.getLogger('dnspc.dnspc.PCRule')
         self.src_ip = '*'
         self.dst_str = '*'
         self.dow = []
@@ -75,6 +82,7 @@ class PCRule(DataObj):
 
 class PCHost(DataObj):
     def __init__(self,**kwargs):
+        self.log = logging.getLogger('dnspc.dnspc.PCHost')
         self.name = None
         self.ip = None
         self.mac = None
@@ -102,6 +110,7 @@ class ParentalControls(BaseResolver):
     """
 
     def __init__(self):
+        self.log = logging.getLogger('dnspc.dnspc.ParentalControls')
         self.rules = []
         self.hosts = []
         self.LOCAL_IP = settings.DNS['LOCAL_IP']
@@ -126,7 +135,7 @@ class ParentalControls(BaseResolver):
                 continue
             rule = PCRule(**sr)
             self.rules.append(rule)
-        print "WTF:rules:",self.rules
+        self.log.debug("WTF:rules: "+self.rules)
     def update_rule(self,rule):
         uid = rule._uid
         idxs = [i for i,c in enumerate(self.rules) if c._uid == uid]
@@ -141,7 +150,7 @@ class ParentalControls(BaseResolver):
         ## Remove angularjs artifacts:
         kwargs.pop('$$hashKey',None)
         saved_rule = self.store['rules'].editRecord(kwargs)
-        print "WTF: saved_rule:",saved_rule
+        self.log.debug("WTF: saved_rule: "+saved_rule)
         rule = PCRule(**saved_rule)
         ## Not sure if I should update the rule, or just reload from disk.
         self.update_rule(rule)
@@ -196,7 +205,7 @@ class ParentalControls(BaseResolver):
         #print "WTF: Created key:",key
         kwargs.pop('$$hashKey',None)
         saved_host = self.store['hosts'].editRecord(kwargs)
-        print "WTF: saved_host:",saved_host
+        self.log.debug("WTF: saved_host: "+saved_host)
         host = PCHost(**saved_host)
         self.update_host(host)
         #pp(self.hosts)
@@ -239,7 +248,7 @@ class ParentalControls(BaseResolver):
         # log defaults: "request,reply,truncated,error"
         # It's just too much stuff!
         logger = DNSLogger("truncated,error",True)
-        print "Starting UDP server"
+        self.log.info("Starting UDP server")
         if 'udp_server' not in dir(self):
             self.udp_server = DNSServer(self,
                             port=self.LOCAL_PORT,
@@ -248,7 +257,7 @@ class ParentalControls(BaseResolver):
                             handler=handler)
         self.udp_server.start_thread()
         if self.TCP:
-            print "Starting TCP server"
+            self.log.info("Starting TCP server")
             if 'tcp_server' not in dir(self):
                 self.tcp_server = DNSServer(self,
                                 port=self.LOCAL_PORT,
@@ -259,12 +268,12 @@ class ParentalControls(BaseResolver):
             self.tcp_server.start_thread()
 
     def stop(self):
-        print dir(self)
+        self.log.debug( dir(self) )
         if 'udp_server' in dir(self):
-            print "    Stopping UDP server."
+            self.log.debug( "    Stopping UDP server." )
             self.udp_server.stop()
         if 'tcp_server' in dir(self) and self.TCP:
-            print "    Stopping TCP server."
+            self.log.debug( "    Stopping TCP server." )
             self.tcp_server.stop()
 
     def resolve(self,request,handler):
@@ -285,16 +294,18 @@ class ParentalControls(BaseResolver):
             if any(match_hosts):
                 match_name = ",".join(match_hosts)
             for rule in rules:
+                if rule.action == 'monitor':
+                    monitor.info({'time':match_time,'match_name':match_name,'client_ip':client_ip,'qname':qname})
                 if rule.action == 'redirect':
-                    print "[{}] REDIRECT {}-->{} to {}".format(match_time,match_name,qname,rule.redirect)
+                    self.log.debug( "[{}] REDIRECT {}-->{} to {}".format(match_time,match_name,qname,rule.redirect) )
                     redir = rule.redirect
                     reply.add_answer(*RR.fromZone("{} IN A {}".format(qname,redir)))
                     return reply
                 if rule.action == 'block':
-                    print "[{}] BLOCKED {}({})-->{}".format(match_time,match_name,client_ip,qname)
+                    self.log.debug( "[{}] BLOCKED {}({})-->{}".format(match_time,match_name,client_ip,qname) )
                     return reply
                 if rule.action == 'allow':
-                    print "[{}] ALLOWED {}({})-->{}".format(match_time,match_name,client_ip,qname)
+                    self.log.debug( "[{}] ALLOWED {}({})-->{}".format(match_time,match_name,client_ip,qname) )
         ## If no match or action == 'allow', then proxy the request to IP_UP
         if handler.protocol == 'udp':
             proxy_r = request.send(self.UP_IP,self.UP_PORT)

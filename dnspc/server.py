@@ -1,7 +1,11 @@
 #/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 ## Add or save rule to ruleset via POST to /saverule:
 ## curl -i -H "Content-Type: application/json" -X POST -d '{"mac":"192.168.0.134","dow":"0,1,2,3,4","time_start":"18:00","time_end:"23:59","domain":"youtube.com","action":"block"}' http://localhost:5000/saverule
+
+import logging
+log = logging.getLogger('dnspc.server')
 
 from flask import Flask, render_template, request
 app = Flask(__name__)
@@ -133,14 +137,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.debug is True:
-        print "Flask DEBUG"
+        log( "Flask DEBUG" )
     else:
-        print "Flask Production"
+        log( "Flask Production" )
 
-    print "About to start PC"
+    log( "About to start PC" )
     PC.stop()
     PC.start()
 
-    print "About to start flask"
+    log( "About to start flask" )
     app.run(host='0.0.0.0',debug = args.debug)
     ## Nothing else gets executed here

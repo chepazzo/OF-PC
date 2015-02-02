@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import logging
+log = logging.getLogger('dnspc.start_server')
+
 import sys
 import argparse
 #from dnspc import dnsconf
@@ -25,13 +30,14 @@ def main():
         debug = True
 
     if debug:
-        print "Flask DEBUG"
+        logging.getLogger('dnspc').setLevel(logging.DEBUG)
+        log.info( "Flask DEBUG" )
     else:
-        print "Flask Production"
-        print "Starting PC"
+        log.info( "Flask Production" )
+        log.info( "Starting PC" )
         server.PC.start()
 
-    print "Starting flask"
+    log.info( "Starting flask" )
     server.app.run(host=settings.WEB['HOST'],port=settings.WEB['PORT'],debug = debug)
     ## Nothing else gets executed here
 

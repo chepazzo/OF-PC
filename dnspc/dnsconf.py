@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+import logging
+log = logging.getLogger('dnspc.dnsconf')
+
 from oslo.config.cfg import OptGroup
 import ConfigParser
 import IPy
@@ -12,16 +16,17 @@ class Conf(object):
     ## Load Config File
     ###
     def __init__(self):
+        self.log = logging.getLogger('dnspc.dnsconf.Conf')
         self.parser = ConfigParser.ConfigParser()
     def load(self,conffile=CONFFILE):
-        print "WTF: dnsconf.load({})".format(conffile)
+        self.log.debug( "WTF: dnsconf.load({})".format(conffile) )
         try:
             self.parser.read(conffile)
         except: 
-            print "** Conf File ({}) invalid **".format(conffile)
+            self.log.info( "** Conf File ({}) invalid **".format(conffile) )
             exit()
         if len(self.parser.sections()) < 1:
-            print "** Conf File ({}) missing or invalid **".format(conffile)
+            self.log.info( "** Conf File ({}) missing or invalid **".format(conffile) )
             exit()
         for sectname in self.parser.sections():
             section = {}

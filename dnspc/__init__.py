@@ -13,3 +13,5 @@ __email__ = 'chepazzo@gmail.com'
 __url__ = 'https://github.com/chepazzo/dnspc'
 __shortdesc__ = 'Parental Controls application for time- and machine- based controls.'
 
+from . import log
+
