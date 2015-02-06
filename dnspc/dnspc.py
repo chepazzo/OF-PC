@@ -289,7 +289,7 @@ class ParentalControls(BaseResolver):
                 if rule.action == 'redirect':
                     self.log.debug( "[{}] REDIRECT {}-->{} to {}".format(match_time,match_name,qname,rule.redirect) )
                     redir = rule.redirect
-                    reply.add_answer(*RR.fromZone("{} IN A {}".format(qname,redir)))
+                    reply.add_answer(*RR.fromZone("{} 3600 IN A {}".format(qname,redir)))
                     return reply
                 if rule.action == 'block':
                     self.log.debug( "[{}] BLOCKED {}({})-->{}".format(match_time,match_name,client_ip,qname) )
