@@ -59,6 +59,7 @@
        <tr><td class='label'>Action</td>
            <td><input type="radio" ng-model="newrule.action" value="block" />block<br />
                <input type="radio" ng-model="newrule.action" value="allow" />allow<br />
+               <input type="radio" ng-model="newrule.action" value="monitor" />monitor<br />
                <input type="radio" ng-model="newrule.action" value="redirect" />redirect
                <input class="text" type="text" ng-show="newrule.action == 'redirect'" ng-model="newrule.redirect" />
            </td>

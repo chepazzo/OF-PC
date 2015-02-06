@@ -36,6 +36,7 @@ class DataObj(object):
             fields = self.__dict__.keys()
         if skip is None:
             skip = []
+        skip.append('log')
         for f in fields:
             if f in skip:
                 continue
@@ -88,17 +89,6 @@ class PCHost(DataObj):
         self.mac = None
         self.owner = None
         super(PCHost, self).__init__(**kwargs)
-    def _serialize(self,fields=None,skip=None):
-        retval = {}
-        if fields is None:
-            fields = self.__dict__.keys()
-        if skip is None:
-            skip = []
-        for f in fields:
-            if f in skip:
-                continue
-            retval[f] = getattr(self,f,None)
-        return retval
 
 class ParentalControls(BaseResolver):
 
@@ -135,7 +125,7 @@ class ParentalControls(BaseResolver):
                 continue
             rule = PCRule(**sr)
             self.rules.append(rule)
-        self.log.debug("WTF:rules: "+self.rules)
+        self.log.debug("WTF:rules: {}".format(self.rules))
     def update_rule(self,rule):
         uid = rule._uid
         idxs = [i for i,c in enumerate(self.rules) if c._uid == uid]
@@ -150,7 +140,7 @@ class ParentalControls(BaseResolver):
         ## Remove angularjs artifacts:
         kwargs.pop('$$hashKey',None)
         saved_rule = self.store['rules'].editRecord(kwargs)
-        self.log.debug("WTF: saved_rule: "+saved_rule)
+        self.log.debug("WTF: saved_rule: {}".format(saved_rule))
         rule = PCRule(**saved_rule)
         ## Not sure if I should update the rule, or just reload from disk.
         self.update_rule(rule)
@@ -205,7 +195,7 @@ class ParentalControls(BaseResolver):
         #print "WTF: Created key:",key
         kwargs.pop('$$hashKey',None)
         saved_host = self.store['hosts'].editRecord(kwargs)
-        self.log.debug("WTF: saved_host: "+saved_host)
+        self.log.debug("WTF: saved_host: {}".format(saved_host))
         host = PCHost(**saved_host)
         self.update_host(host)
         #pp(self.hosts)
@@ -295,7 +285,7 @@ class ParentalControls(BaseResolver):
                 match_name = ",".join(match_hosts)
             for rule in rules:
                 if rule.action == 'monitor':
-                    monitor.info({'time':match_time,'match_name':match_name,'client_ip':client_ip,'qname':qname})
+                    monitor.info({'time':match_time,'match_name':match_name,'client_ip':client_ip,'qname':str(qname)})
                 if rule.action == 'redirect':
                     self.log.debug( "[{}] REDIRECT {}-->{} to {}".format(match_time,match_name,qname,rule.redirect) )
                     redir = rule.redirect
