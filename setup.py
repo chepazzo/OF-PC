@@ -58,6 +58,9 @@ setup(name=__packagename__,
     install_requires=requires,
     include_package_data=True,
     data_files=data_files,
+    scripts=[
+        'bin/dnspc-setloglevel',
+    ],
     entry_points={
         'console_scripts': {
             'start_dnspc = dnspc.start_server:main'
