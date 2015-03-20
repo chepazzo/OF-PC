@@ -6,7 +6,7 @@ LOG_MAIN = '/var/log/dnspc.log'
 LOG_MON = '/var/lib/dnspc/monitor.json'
 
 log = logging.getLogger('dnspc')
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.WARN)
 fh = logging.handlers.RotatingFileHandler(LOG_MAIN)
 fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 log.addHandler(fh)

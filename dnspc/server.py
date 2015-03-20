@@ -118,6 +118,16 @@ def stop():
     PC.stop()
     return "dnspc Stopped!"
 
+@app.route('/setloglevel', methods = ['POST'])
+def setloglevel():
+    args = request.json
+    newlevel = args['ll'].upper()
+    rootlog = logging.getLogger('dnspc')
+    oldlevel = logging.getLevelName(rootlog.level)
+    log.info('Changing log level from [{}] to [{}]'.format(oldlevel,newlevel))
+    rootlog.setLevel(getattr(logging,newlevel))
+    return jsonify(succ(value=newlevel))
+
 def succ(field='data',value=''):
     ''' {'stat':'ok', 'data':{} '''
     return {'stat':'ok',field:value}

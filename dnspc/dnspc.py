@@ -269,13 +269,15 @@ class ParentalControls(BaseResolver):
     def resolve(self,request,handler):
         client_ip = handler.client_address[0]
         #print "Request from IP: {}".format(client_ip)
-        reply = request.reply()
         qname = request.q.qname
         qtype = QTYPE[request.q.qtype]
+        reply = request.reply()
+        self.log.debug("{} request for {} by {}".format(qtype,qname,client_ip))
         #print "query: {}".format(qname)
         #print "query: {}".format(qname.matchGlob("*.yahoo.com"))
         # Try to resolve locally unless on skip list
         rules = self.get_matching_rules(client_ip,qname)
+        self.log.debug("Matched rules: {}".format(rules))
         if any(rules):
             ## Collecting info on match for logging
             match_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')

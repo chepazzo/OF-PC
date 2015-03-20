@@ -8,8 +8,8 @@ import IPy
 from filestore import FileStore
 from pprint import pprint as pp
  
-CONFFILE = 'config/example.cfg'
-#CONFFILE = '/etc/pc.conf'
+CONFFILE = 'config/dnspc.example.conf'
+#CONFFILE = '/etc/dnspc.conf'
 
 class Conf(object):
     ###
