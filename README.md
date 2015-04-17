@@ -33,17 +33,13 @@ Eventually, I will add a pyDHCP server to this so you can simply shut off your e
 
 ToDo
 ====
-1. Replace prints with real debug logging.
-2. Set up activity logs.
-    * Log more than just matched rules.
-    * alt: still only log matched rules, but 
-      require creating a rule to "allow" the domain "*"
-      so that every query gets logged.
-3. Create reports based on query logs.
-4. Add functionality to allow user to group a list of domains in a single rule
+1. Add snooze button to temporarily disable or enable a rule
+    * Snooze would automatically revert after alloted time.
+2. Create reports based on query logs.
+3. Add functionality to allow user to group a list of domains in a single rule
     * e.g. { "name":"youtube","domains":["\*.youtube.com","\*.googlevideo.com"] }
-5. Improve performance
-6. Respond with user-defined data for matches to onboarded hosts/IPs.
-7. Allow re-ordering of rules.
-8. Better handling of behavior if multiple rules match.
+4. Improve performance
+5. Respond with user-defined data for matches to onboarded hosts/IPs.
+6. Allow re-ordering of rules.
+7. Better handling of behavior if multiple rules match.
 
